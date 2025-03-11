@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --bgButton: oklch(66.59% 0.2486 140.19) !important;
+    --bgButtonHover: oklch(79.76% 0.2486 140.19) !important;
+    --navBg: oklch(73.36% 0.2495 147.99) !important;
+  }
