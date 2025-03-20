@@ -13,8 +13,14 @@ class Projet extends Model
         'description',
         'status',
         'start_date',
+        'goal',
         'end_date',
         'user_id',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date', 
+        'end_date' => 'date',   
     ];
 
     public function user() : BelongsTo
