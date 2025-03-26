@@ -7,3 +7,13 @@
     --bgButtonHover: oklch(79.76% 0.2486 140.19) !important;
     --navBg: oklch(73.36% 0.2495 147.99) !important;
   }
+
+  h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+  
+  body, p, button {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+  }

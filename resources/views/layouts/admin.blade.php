@@ -12,23 +12,16 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Tableau de bord') }}
-                    </x-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('projets')" :active="request()->routeIs('projets')">
+                    <x-nav-link :href="route('admin.projects.index')" :active="request()->routeIs('admin.projects.index')">
                         {{ __('Projets') }}
                     </x-nav-link>
                 </div>
                 <!-- si l'utilisateur est admin -->
-                @if (Auth::user()->role == 'admin')
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
-                            {{ __('Back-office') }}
+                        <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
+                            {{ __('Utilisateurs') }}
                         </x-nav-link>
                     </div>
-                @endif
             </div>
 
             <!-- Settings Dropdown -->
@@ -81,7 +74,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Tableau de bord') }}
+                {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
 
@@ -104,7 +97,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Se déconnecter') }}
+                        {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

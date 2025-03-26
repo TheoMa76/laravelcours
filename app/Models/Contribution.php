@@ -11,6 +11,8 @@ class Contribution extends Model
         'amount',
         'user_id',
         'projet_id',
+        'type',
+        'description'
     ];
 
     public function projet() : BelongsTo

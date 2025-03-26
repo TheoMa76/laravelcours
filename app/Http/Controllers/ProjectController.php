@@ -14,7 +14,8 @@ class ProjectController extends Controller
 
     public function index()
     {
-        $projets = Projet::with('user')->get();
+        //get projects with status 'En cours' and with user
+        $projets = Projet::with('user')->where('status', 'en_cours')->get();
         return view('projects.projets', compact('projets'));
     }
 
@@ -36,7 +37,6 @@ class ProjectController extends Controller
         ]);
     
     
-        // Création du projet
         $projet = new Projet();
         $projet->name = $validatedData['name'];
         $projet->description = $validatedData['description'];
@@ -46,7 +46,6 @@ class ProjectController extends Controller
         $projet->end_date = $validatedData['end_date'];
         $projet->user_id = auth()->id();
     
-        // Traitement de l'image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $extension = $image->getClientOriginalExtension();
@@ -100,9 +99,13 @@ class ProjectController extends Controller
 
     public function destroy($id){
         $projet = Projet::findOrFail($id);
-        $projet->delete();
+        if($projet->user_id != auth()->id() && !auth()->user()->isAdmin()){
+            return redirect()->route('projets')->with('error', 'Vous n\'êtes pas autorisé à supprimer ce projet');
+        }else{
+            $projet->delete();
 
-        return redirect()->route('projets')->with('success', 'Projet supprimé avec succès');
+            return redirect()->route('projets')->with('success', 'Projet supprimé avec succès');
+        }
     }
 
     public function contribute(Request $request, $id){
