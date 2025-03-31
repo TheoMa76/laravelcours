@@ -75,25 +75,49 @@ class="relative">
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         @if(isset($column['tooltip']))
                             <div x-data="{ showTooltip: false }" class="relative inline-block">
+                                <!-- Élément déclencheur -->
                                 <span 
-                                    x-on:mouseover="showTooltip = true" 
+                                    x-on:mouseenter="showTooltip = true"
                                     x-on:mouseleave="showTooltip = false"
-                                    class="cursor-pointer"
+                                    class="cursor-pointer underline decoration-dotted"
                                 >
                                     @if(isset($column['format']))
-                                        <!-- Gestion des formats comme avant -->
+                                        @if($column['format'] === 'date')
+                                            {{ \Carbon\Carbon::parse($item->{$column['key']})->format('d/m/Y') }}
+                                        @elseif($column['format'] === 'datetime')
+                                            {{ \Carbon\Carbon::parse($item->{$column['key']})->format('d/m/Y H:i') }}
+                                        @elseif($column['format'] === 'boolean')
+                                            {!! $item->{$column['key']} ? '<span class="text-green-500">✓</span>' : '<span class="text-red-600">✗</span>' !!}
+                                        @elseif($column['format'] === 'custom' && isset($column['callback']))
+                                            {{ $column['callback']($item) }}
+                                        @else
+                                            {{ $item->{$column['key']} }}
+                                        @endif
                                     @else
                                         {{ $item->{$column['key']} }}
                                     @endif
                                 </span>
                                 
+                                <!-- Tooltip -->
                                 <div 
                                     x-show="showTooltip"
-                                    x-transition
-                                    class="absolute z-10 w-64 p-2 mt-2 text-sm text-white bg-gray-800 rounded-lg shadow-lg"
+                                    x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-150"
+                                    x-transition:leave-start="opacity-100 scale-100"
+                                    x-transition:leave-end="opacity-0 scale-95"
+                                    class="absolute z-50 w-64 p-3 text-sm text-white bg-gray-800 rounded-lg shadow-xl max-h-60 overflow-y-auto"
                                     style="display: none;"
+                                    x-cloak
                                 >
-                                    {!! nl2br(e($column['tooltip']($item))) !!}
+                                    @if(is_callable($column['tooltip']))
+                                        {!! $column['tooltip']($item) !!}
+                                    @else
+                                        {!! $column['tooltip'] !!}
+                                    @endif
+                                    <!-- Pointeur du tooltip -->
+                                    <div class="absolute w-3 h-3 -top-1.5 left-1/2 transform -translate-x-1/2 rotate-45 bg-gray-800"></div>
                                 </div>
                             </div>
                         @else

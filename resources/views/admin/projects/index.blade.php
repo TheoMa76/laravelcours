@@ -30,12 +30,7 @@
                             'route' => 'admin.users.show',
                             'param' => 'user_id'
                         ]],
-                        ['name' => 'Contributeurs', 'key' => 'total_contributions_count','tooltip' => fn($item) => 
-                            'Financières: ' . $item->financial_contributions_count . "\n" .
-                            'Matérielles: ' . $item->material_contributions_count . "\n" .
-                            'Bénévolat: ' . $item->volunteer_contributions_count . "\n" .
-                            'Total financier: ' . number_format($item->total_amount, 2) . ' €'
-                        ],
+                        ['name' => 'Contributeurs', 'key' => 'total_contributions_count','tooltip' => fn($item) => '<div><p>'.$item->total_amount.'</p></div>'],
                         ['name' => 'Date création', 'key' => 'created_at','format'=> 'date']
                     ]" 
                     :data="$projets"
