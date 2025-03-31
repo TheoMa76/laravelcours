@@ -5,16 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer un Projet</title>
     @vite(['resources/css/app.css', 'resources/js/app.js']) <!-- Assurez-vous d'avoir Tailwind ou un autre CSS -->
-    <style>
-        /* Styles personnalisés si nécessaire */
-        .form-input {
-            transition: border-color 0.3s ease;
-        }
-        .form-input:focus {
-            border-color: #4F46E5; /* Couleur focus */
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
-    </style>
 </head>
 <body class="bg-gray-100">
     @include('layouts.navigation') <!-- Inclusion du layout de navigation -->

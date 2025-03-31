@@ -25,7 +25,7 @@
             <div class="fixed top-0 left-0 w-full shadow-md p-4 lg:px-8 z-50 ">
                     <nav class="flex items-center justify-between w-full max-w-6xl mx-auto">
                     <a href="{{ url('/') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="w-8 h-8" />
+                        <img src="{{ asset('images/greenPot.png') }}" alt="Logo" class="w-8 h-8" />
                         <span class="text-lg font-bold">GreenPot</span>
                     </a>
                         @if (Route::has('login'))

@@ -16,13 +16,23 @@ class AdminProjectController extends Controller
     {
         //get projects with every data related to it : user and contributions
         $projets = Projet::with('user', 'contributions')->get();
+        foreach($projets as $projet){
+            //compter le nombre de contribution par type : financière, matérielle, bénévolat
+            $projet->financial_contributions_count = $projet->contributions->where('type', 'financière')->count();
+            $projet->material_contributions_count = $projet->contributions->where('type', 'matérielle')->count();
+            $projet->volunteer_contributions_count = $projet->contributions->where('type', 'bénévolat')->count();
+            $projet->total_amount = $projet->contributions->where('type', 'financière')->sum('amount');
+            $projet->total_contributions_count = $projet->financial_contributions_count + $projet->material_contributions_count + $projet->volunteer_contributions_count;
+            $projet->user_name = $projet->user->name;
+        }
         return view('admin.projects.index', compact('projets'));
     }
 
     /**
      * Validate the project ( put status to en_cours) to validate project that user submitted
      */
-    public function validateProject(Projet $projet){
+    public function validateProject($id){
+        $projet = Projet::find($id);
         $projet->status = 'en_cours';
         $projet->save();
         return redirect()->route('admin.projects.index');

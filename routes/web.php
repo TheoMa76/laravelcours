@@ -28,7 +28,7 @@ Route::middleware([EnsureUserIsAdmin::class])->group(function () {
     Route::get('/admin/projets', [AdminProjectController::class, 'index'])->name('admin.projects.index');
     Route::get('/admin/projets/create', [AdminProjectController::class, 'create'])->name('admin.projects.create');
     Route::post('/admin/projets', [AdminProjectController::class, 'store'])->name('admin.projects.store');
-    Route::get('/admin/projets/{id}/validate', [AdminProjectController::class, 'validateProject'])->name('admin.projects.validate');
+    Route::post('/admin/projets/{id}/validate', [AdminProjectController::class, 'validateProject'])->name('admin.projects.validate');
     Route::get('/admin/projets/{id}/edit', [AdminProjectController::class, 'edit'])->name('admin.projects.edit');
     Route::put('/admin/projets/{id}', [AdminProjectController::class, 'update'])->name('admin.projects.update');
     Route::delete('/admin/projets/{id}', [AdminProjectController::class, 'destroy'])->name('admin.projects.destroy');

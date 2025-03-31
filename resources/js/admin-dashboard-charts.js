@@ -20,7 +20,6 @@ function initDashboardCharts() {
         }
     };
 
-    // Users Chart - Style original préservé
     const usersChartEl = document.getElementById('usersChart');
     if (usersChartEl) {
         const usersOptions = {
@@ -53,7 +52,7 @@ function initDashboardCharts() {
                 categories: JSON.parse(usersChartEl.dataset.labels || '[]'),
                 labels: {
                     style: {
-                        colors: '#6B7280',
+                        colors: '#000000',
                         fontSize: '12px',
                         fontFamily: 'Manrope, sans-serif'
                     }
@@ -64,13 +63,13 @@ function initDashboardCharts() {
             yaxis: {
                 labels: {
                     style: {
-                        colors: '#6B7280',
+                        colors: '#000000',
                         fontSize: '12px'
                     }
                 }
             },
             grid: {
-                borderColor: '#F3F4F6',
+                borderColor: '#86EFAC',
                 strokeDashArray: 4,
                 yaxis: { lines: { show: true } }
             },
@@ -81,14 +80,13 @@ function initDashboardCharts() {
         new ApexCharts(usersChartEl, usersOptions).render();
     }
 
-    // Projects Chart - Style original préservé
     const projectsChartEl = document.getElementById('projectsChart');
     if (projectsChartEl) {
         const projectsOptions = {
             ...commonOptions,
             series: [{
                 name: 'Projets',
-                data: JSON.parse(projectsChartEl.dataset.values || '[]')
+                data: JSON.parse(projectsChartEl.dataset.values || '[]'),
             }],
             chart: {
                 ...commonOptions.chart,
@@ -109,7 +107,7 @@ function initDashboardCharts() {
                 categories: JSON.parse(projectsChartEl.dataset.labels || '[]'),
                 labels: {
                     style: {
-                        colors: '#6B7280',
+                        colors: '#000000',
                         fontSize: '12px',
                         fontFamily: 'Manrope, sans-serif'
                     }
@@ -118,15 +116,16 @@ function initDashboardCharts() {
                 axisTicks: { show: false }
             },
             yaxis: {
+                min: 0,
                 labels: {
                     style: {
-                        colors: '#6B7280',
+                        colors: '#000000',
                         fontSize: '12px'
                     }
                 }
             },
             grid: {
-                borderColor: '#F3F4F6',
+                borderColor: '#86EFAC',
                 strokeDashArray: 4,
                 yaxis: { lines: { show: true } }
             },
@@ -137,13 +136,11 @@ function initDashboardCharts() {
         new ApexCharts(projectsChartEl, projectsOptions).render();
     }
 
-    // Contributions Chart - Style original préservé
     const contributionsChartEl = document.getElementById('contributionsChart');
     if (contributionsChartEl) {
         const contributionsData = JSON.parse(contributionsChartEl.dataset.values || '[0, 0, 0]');
         const financialTotal = contributionsChartEl.dataset.financialTotal || '0';
         
-        // Calculons le total une fois pour toutes
         const totalContributions = contributionsData.reduce((a, b) => a + b, 0);
     
         const contributionsOptions = {
@@ -153,7 +150,7 @@ function initDashboardCharts() {
                 height: '95%'
             },
             labels: ['Financières', 'Matérielles', 'Bénévolat'],
-            colors: ['#10B981', '#0D9488', '#059669'],
+            colors: ['#2E7D32', '#22C55E', '#86EFAC'],
             dataLabels: {
                 enabled: true,
                 formatter: function(val) { 
@@ -165,7 +162,7 @@ function initDashboardCharts() {
                 position: 'bottom',
                 fontSize: '12px',
                 labels: {
-                    colors: '#6B7280',
+                    colors: '#000000',
                     useSeriesColors: false
                 },
                 markers: {
@@ -182,7 +179,7 @@ function initDashboardCharts() {
                             total: {
                                 show: true,
                                 label: 'Total',
-                                color: '#6B7280',
+                                color: '#000000',
                                 formatter: function() {
                                     return totalContributions === 0 ? '0' : totalContributions.toString();
                                 }
