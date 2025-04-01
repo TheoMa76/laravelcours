@@ -1,7 +1,7 @@
 <x-app-layout>    
     <div class="flex flex-row min-h-screen">
         <!-- Sidebar Admin -->
-        <nav class="bg-white border-r w-1/6 flex flex-col border-[var(--primary-gray-light)] drop-shadow-lg">
+        <nav class="bg-white border-r w-fit flex flex-col border-[var(--primary-gray-light)] drop-shadow-lg">
             <!-- Primary Navigation Menu -->
             <div class="w-full flex flex-col mx-auto px-4 sm:px-6 lg:px-8 py-52">
                 <!-- Navigation Links - Disposition verticale -->
