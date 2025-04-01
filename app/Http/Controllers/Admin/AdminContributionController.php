@@ -13,7 +13,12 @@ class AdminContributionController extends Controller
      */
     public function index()
     {
-        Contribution::paginate(20);
+        $contributions = Contribution::with('user', 'projet')->get();
+        foreach ($contributions as $contribution) {
+            $contribution->user_name = $contribution->user->name;
+            $contribution->project_name = $contribution->projet->name;
+            $contribution->type = ucfirst($contribution->type);
+        }
         return view('admin.contributions.index', compact('contributions'));
     }
 

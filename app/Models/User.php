@@ -52,6 +52,11 @@ class User extends Authenticatable
         $this->notify(new CustomResetPassword($token));
     }
 
+    public function getProjectsListAttribute()
+    {
+        return $this->projects->pluck('name')->implode(', ');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

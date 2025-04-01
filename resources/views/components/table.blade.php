@@ -207,95 +207,96 @@ class="relative">
                                         </button>
                                     </form>
                                     @endif
+                                    @if(isset($actions['custom']))
+                                        @foreach($actions['custom'] as $customAction)
+                                            @if(($customAction['condition'] ?? true) && ($customAction['condition']($item) ?? true))
+                                                @if($customAction['confirm'] ?? false)
+                                                    <div x-data="{ openConfirm: false }">
+                                                        <button 
+                                                            @click="openConfirm = true"
+                                                            class="flex items-center w-full px-4 mb-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
+                                                        >
+                                                            @if(isset($customAction['icon']))
+                                                            <i class="{{ $customAction['icon'] }} mr-3"></i>
+                                                            @endif
+                                                            {{ $customAction['label'] }}
+                                                        </button>
                                     
-                                    @foreach($actions['custom'] as $customAction)
-                                    @if(($customAction['condition'] ?? true) && ($customAction['condition']($item) ?? true))
-                                        @if($customAction['confirm'] ?? false)
-                                            <div x-data="{ openConfirm: false }">
-                                                <button 
-                                                    @click="openConfirm = true"
-                                                    class="flex items-center w-full px-4 mb-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
-                                                >
-                                                    @if(isset($customAction['icon']))
-                                                    <i class="{{ $customAction['icon'] }} mr-3"></i>
-                                                    @endif
-                                                    {{ $customAction['label'] }}
-                                                </button>
-                            
-                                                <!-- Modal de confirmation -->
-                                                <div 
-                                                    x-show="openConfirm"
-                                                    class="fixed inset-0 bg-[var(--primary-gray)] bg-opacity-50 flex items-center justify-center z-50"
-                                                >
-                                                    <div class="bg-white rounded-lg p-6 max-w-sm w-full">
-                                                        <h3 class="text-lg font-medium text-[var(--primary-black)] mb-4">
-                                                            Confirmation
-                                                        </h3>
-                                                        <p class="text-[var(--primary-black)] mb-6">
-                                                            {{ $customAction['confirm_message'] }}
-                                                        </p>
-                                                        <div class="flex justify-end space-x-4">
-                                                            <button 
-                                                                @click="openConfirm = false"
-                                                                class="px-4 py-2 border border-[var(--primary-gray)] rounded-md text-[var(--primary-black)] hover:bg-[var(--primary-gray)]"
-                                                            >
-                                                                Annuler
-                                                            </button>
-                                                            <form 
-                                                                method="{{ $customAction['method'] ?? 'POST' }}"
-                                                                action="{{ route($customAction['route'], $item->id) }}"
-                                                                @submit.prevent="
-                                                                    fetch($event.target.action, {
-                                                                        method: $event.target.method,
-                                                                        headers: {
-                                                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                                                            'Accept': 'application/json',
-                                                                            'Content-Type': 'application/json'
-                                                                        },
-                                                                        body: JSON.stringify(Object.fromEntries(new FormData($event.target)))
-                                                                    })
-                                                                    .then(response => {
-                                                                        if (response.ok) {
-                                                                            showToast('{{ $successMessage }}', 'success');
-                                                                            setTimeout(() => window.location.reload(), 1000);
-                                                                        } else {
-                                                                            showToast('{{ $errorMessage }}', 'error');
-                                                                        }
-                                                                    })
-                                                                    .catch(() => {
-                                                                        showToast('{{ $errorMessage }}', 'error');
-                                                                    });
-                                                                    openConfirm = false;
-                                                                "
-                                                            >
-                                                                @csrf
-                                                                @if(($customAction['method'] ?? 'POST') !== 'GET')
-                                                                    @method($customAction['method'])
-                                                                @endif
-                                                                <button 
-                                                                    type="submit"
-                                                                    class="px-4 py-2 bg-[var(--primary-green)] text-white rounded-md hover:bg-[#1B5E20]"
-                                                                >
-                                                                    Confirmer
-                                                                </button>
-                                                            </form>
+                                                        <!-- Modal de confirmation -->
+                                                        <div 
+                                                            x-show="openConfirm"
+                                                            class="fixed inset-0 bg-[var(--primary-gray)] bg-opacity-50 flex items-center justify-center z-50"
+                                                        >
+                                                            <div class="bg-white rounded-lg p-6 max-w-sm w-full">
+                                                                <h3 class="text-lg font-medium text-[var(--primary-black)] mb-4">
+                                                                    Confirmation
+                                                                </h3>
+                                                                <p class="text-[var(--primary-black)] mb-6">
+                                                                    {{ $customAction['confirm_message'] }}
+                                                                </p>
+                                                                <div class="flex justify-end space-x-4">
+                                                                    <button 
+                                                                        @click="openConfirm = false"
+                                                                        class="px-4 py-2 border border-[var(--primary-gray)] rounded-md text-[var(--primary-black)] hover:bg-[var(--primary-gray)]"
+                                                                    >
+                                                                        Annuler
+                                                                    </button>
+                                                                    <form 
+                                                                        method="{{ $customAction['method'] ?? 'POST' }}"
+                                                                        action="{{ route($customAction['route'], $item->id) }}"
+                                                                        @submit.prevent="
+                                                                            fetch($event.target.action, {
+                                                                                method: $event.target.method,
+                                                                                headers: {
+                                                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                                                    'Accept': 'application/json',
+                                                                                    'Content-Type': 'application/json'
+                                                                                },
+                                                                                body: JSON.stringify(Object.fromEntries(new FormData($event.target)))
+                                                                            })
+                                                                            .then(response => {
+                                                                                if (response.ok) {
+                                                                                    showToast('{{ $successMessage }}', 'success');
+                                                                                    setTimeout(() => window.location.reload(), 1000);
+                                                                                } else {
+                                                                                    showToast('{{ $errorMessage }}', 'error');
+                                                                                }
+                                                                            })
+                                                                            .catch(() => {
+                                                                                showToast('{{ $errorMessage }}', 'error');
+                                                                            });
+                                                                            openConfirm = false;
+                                                                        "
+                                                                    >
+                                                                        @csrf
+                                                                        @if(($customAction['method'] ?? 'POST') !== 'GET')
+                                                                            @method($customAction['method'])
+                                                                        @endif
+                                                                        <button 
+                                                                            type="submit"
+                                                                            class="px-4 py-2 bg-[var(--primary-green)] text-white rounded-md hover:bg-[#1B5E20]"
+                                                                        >
+                                                                            Confirmer
+                                                                        </button>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <a 
-                                                href="{{ route($customAction['route'], $item->id) }}"
-                                                class="flex items-center px-4 py-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
-                                            >
-                                                @if(isset($customAction['icon']))
-                                                <i class="{{ $customAction['icon'] }} mr-3"></i>
+                                                @else
+                                                    <a 
+                                                        href="{{ route($customAction['route'], $item->id) }}"
+                                                        class="flex items-center px-4 py-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
+                                                    >
+                                                        @if(isset($customAction['icon']))
+                                                        <i class="{{ $customAction['icon'] }} mr-3"></i>
+                                                        @endif
+                                                        {{ $customAction['label'] }}
+                                                    </a>
                                                 @endif
-                                                {{ $customAction['label'] }}
-                                            </a>
-                                        @endif
+                                            @endif
+                                    @endforeach
                                     @endif
-                                @endforeach
                                 </div>
                             </div>
                         </div>

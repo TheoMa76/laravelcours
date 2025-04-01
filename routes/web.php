@@ -5,6 +5,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\Admin\AdminProjectController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminHomeController;
+use App\Http\Controllers\Admin\AdminContributionController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware([EnsureUserIsAdmin::class])->group(function () {
     Route::get('/admin/projets', [AdminProjectController::class, 'index'])->name('admin.projects.index');
     Route::get('/admin/projets/create', [AdminProjectController::class, 'create'])->name('admin.projects.create');
+    Route::get('/admin/projets/{id}', [AdminProjectController::class, 'show'])->name('admin.projects.show');
     Route::post('/admin/projets', [AdminProjectController::class, 'store'])->name('admin.projects.store');
     Route::post('/admin/projets/{id}/validate', [AdminProjectController::class, 'validateProject'])->name('admin.projects.validate');
     Route::get('/admin/projets/{id}/edit', [AdminProjectController::class, 'edit'])->name('admin.projects.edit');
@@ -38,6 +40,8 @@ Route::middleware([EnsureUserIsAdmin::class])->group(function () {
     Route::get('/admin/users/{user}/edit', [AdminUserController::class, 'edit'])->name('admin.users.edit');
     Route::put('/admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
     Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])->name('admin.users.destroy');
+
+    Route::get('/admin/contributions', [AdminContributionController::class, 'index'])->name('admin.contributions.index');    
 
     Route::get('/admin/dashboard', [AdminHomeController::class, 'stats'])->name('admin.dashboard');
 });
