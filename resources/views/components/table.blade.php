@@ -23,7 +23,7 @@
             close: true,
             gravity: 'top',
             position: 'right',
-            backgroundColor: type === 'success' ? '#2E7D32' : '#D32F2F',
+            backgroundColor: type === 'success' ? 'var(--primary-green)' : 'var(--primary-red)',
         }).showToast();
     },
     updateSort(column) {
@@ -44,13 +44,13 @@
 }" 
 @click.away="closeActionMenu()"
 class="relative">
-    <div class="overflow-x-auto rounded-lg border border-gray-200">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-[#2E7D32]">
+    <div class="overflow-x-auto rounded-lg border border-[var(--primary-gray-light)]">
+        <table class="min-w-full divide-y divide-[var(--primary-gray-light)]">
+            <thead class="bg-[var(--primary-green)]">
                 <tr>
                     @foreach($columns as $column)
                     <th 
-                        class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider cursor-pointer hover:bg-[#1B5E20]"
+                        class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider cursor-pointer hover:bg-[var(--primary-green-dark)]"
                         @click="updateSort('{{ $column['key'] }}')"
                     >
                         <div class="flex justify-between items-center">
@@ -62,17 +62,17 @@ class="relative">
                     </th>
                     @endforeach
                     @if($actions['view'] || $actions['edit'] || $actions['delete'] || !empty($actions['custom']))
-                    <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">
+                    <th class="px-6 py-3 text-left text-xs font-medium text-white cursor-default uppercase tracking-wider">
                         Actions
                     </th>
                     @endif
                 </tr>
             </thead>
-            <tbody class="bg-white divide-y-2 divide-[#86EFAC]">
+            <tbody class="bg-white divide-y-2 divide-[var(--primary-green-superlight)]">
                 @foreach($data as $item)
-                <tr class="{{ $loop->even ? 'bg-[#86EFAC]' : 'bg-white' }} hover:bg-[#22C55E]">
+                <tr class="{{ $loop->even ? 'bg-[var(--primary-green-superlight)]' : 'bg-white' }} hover:bg-[var(--primary-light-hover)]">
                     @foreach($columns as $column)
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap cursor-default text-sm text-[var(--primary-black)]">
                         @if(isset($column['tooltip']))
                             <div x-data="{ showTooltip: false }" class="relative inline-block">
                                 <!-- Élément déclencheur -->
@@ -87,7 +87,7 @@ class="relative">
                                         @elseif($column['format'] === 'datetime')
                                             {{ \Carbon\Carbon::parse($item->{$column['key']})->format('d/m/Y H:i') }}
                                         @elseif($column['format'] === 'boolean')
-                                            {!! $item->{$column['key']} ? '<span class="text-green-500">✓</span>' : '<span class="text-red-600">✗</span>' !!}
+                                            {!! $item->{$column['key']} ? '<span class="text-[var(--primary-green)]">✓</span>' : '<span class="text-[var(--primary-red)]">✗</span>' !!}
                                         @elseif($column['format'] === 'custom' && isset($column['callback']))
                                             {{ $column['callback']($item) }}
                                         @else
@@ -107,9 +107,15 @@ class="relative">
                                     x-transition:leave="transition ease-in duration-150"
                                     x-transition:leave-start="opacity-100 scale-100"
                                     x-transition:leave-end="opacity-0 scale-95"
-                                    class="absolute z-50 w-64 p-3 text-sm text-white bg-gray-800 rounded-lg shadow-xl max-h-60 overflow-y-auto"
-                                    style="display: none;"
+                                    class="fixed z-50 min-w-64 p-3 text-sm text-white bg-[var(--primary-black)] rounded-lg shadow-xl"
+                                    style="display: none; left: calc(var(--mouse-x) + 10px); top: calc(var(--mouse-y) + 10px);"
                                     x-cloak
+                                    x-init="
+                                        document.addEventListener('mousemove', (e) => {
+                                            document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+                                            document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+                                        })
+                                    "
                                 >
                                     @if(is_callable($column['tooltip']))
                                         {!! $column['tooltip']($item) !!}
@@ -117,7 +123,7 @@ class="relative">
                                         {!! $column['tooltip'] !!}
                                     @endif
                                     <!-- Pointeur du tooltip -->
-                                    <div class="absolute w-3 h-3 -top-1.5 left-1/2 transform -translate-x-1/2 rotate-45 bg-gray-800"></div>
+                                    <div class="absolute w-3 h-3 -top-1.5 left-1/2 transform -translate-x-1/2 rotate-45 bg-[var(--primary-black)]"></div>
                                 </div>
                             </div>
                         @else
@@ -127,7 +133,7 @@ class="relative">
                                 @elseif($column['format'] === 'datetime')
                                     {{ \Carbon\Carbon::parse($item->{$column['key']})->format('d/m/Y H:i') }}
                                 @elseif($column['format'] === 'boolean')
-                                    {!! $item->{$column['key']} ? '<span class="text-green-500">✓</span>' : '<span class="text-red-600">✗</span>' !!}
+                                    {!! $item->{$column['key']} ? '<span class="text-[var(--primary-green)]">✓</span>' : '<span class="text-[var(--primary-red)]">✗</span>' !!}
                                 @elseif($column['format'] === 'custom' && isset($column['callback']))
                                     {{ $column['callback']($item) }}
                                 @else
@@ -135,7 +141,7 @@ class="relative">
                                 @endif
                             @elseif(isset($column['link']))
                                 <a href="{{ route($column['link']['route'], $item->{$column['link']['param']}) }}" 
-                                class="text-[#1D4ED8] hover:text-[#1E40AF] hover:underline">
+                                class="text-[var(--primary-blue)] hover:text-[var(--primary-blue-hover)] hover:underline">
                                     {{ $item->{$column['key']} }}
                                 </a>
                             @else
@@ -150,7 +156,7 @@ class="relative">
                         <div class="relative inline-block text-left">
                             <button 
                                 @click="toggleActionMenu('{{ $item->id }}')"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 focus:outline-none"
+                                class="inline-flex items-center justify-center p-2 rounded-md text-[var(--primary-black)] hover:text-[var(--primary-black)] focus:outline-none"
                             >
                                 <i class="fas fa-ellipsis"></i>
                             </button>
@@ -170,9 +176,9 @@ class="relative">
                                     @if($actions['view'])
                                     <a 
                                         href="{{ isset($actionUrls['view']) ? route($actionUrls['view'], $item->id) : '#' }}"
-                                        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        class="flex items-center px-4 py-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
                                     >
-                                        <i class="fas fa-eye mr-3 text-gray-500"></i>
+                                        <i class="fas fa-eye mr-3 text-[var(--primary-gray)]"></i>
                                         Détails
                                     </a>
                                     @endif
@@ -180,9 +186,9 @@ class="relative">
                                     @if($actions['edit'])
                                     <a 
                                         href="{{ isset($actionUrls['edit']) ? route($actionUrls['edit'], $item->id) : '#' }}"
-                                        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                        class="flex items-center px-4 py-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
                                     >
-                                        <i class="fas fa-edit mr-3 text-gray-500"></i>
+                                        <i class="fas fa-edit mr-3 text-[var(--primary-gray)]"></i>
                                         Modifier
                                     </a>
                                     @endif
@@ -193,10 +199,10 @@ class="relative">
                                         @method('DELETE')
                                         <button 
                                             type="submit"
-                                            class="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            class="flex items-center w-full px-4 py-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
                                             onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')"
                                         >
-                                            <i class="fas fa-trash mr-3 text-gray-500"></i>
+                                            <i class="fas fa-trash mr-3 text-[var(--primary-gray)]"></i>
                                             Supprimer
                                         </button>
                                     </form>
@@ -208,7 +214,7 @@ class="relative">
                                             <div x-data="{ openConfirm: false }">
                                                 <button 
                                                     @click="openConfirm = true"
-                                                    class="flex items-center w-full px-4 mb-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                    class="flex items-center w-full px-4 mb-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
                                                 >
                                                     @if(isset($customAction['icon']))
                                                     <i class="{{ $customAction['icon'] }} mr-3"></i>
@@ -219,19 +225,19 @@ class="relative">
                                                 <!-- Modal de confirmation -->
                                                 <div 
                                                     x-show="openConfirm"
-                                                    class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50"
+                                                    class="fixed inset-0 bg-[var(--primary-gray)] bg-opacity-50 flex items-center justify-center z-50"
                                                 >
                                                     <div class="bg-white rounded-lg p-6 max-w-sm w-full">
-                                                        <h3 class="text-lg font-medium text-gray-900 mb-4">
+                                                        <h3 class="text-lg font-medium text-[var(--primary-black)] mb-4">
                                                             Confirmation
                                                         </h3>
-                                                        <p class="text-gray-700 mb-6">
+                                                        <p class="text-[var(--primary-black)] mb-6">
                                                             {{ $customAction['confirm_message'] }}
                                                         </p>
                                                         <div class="flex justify-end space-x-4">
                                                             <button 
                                                                 @click="openConfirm = false"
-                                                                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                                                                class="px-4 py-2 border border-[var(--primary-gray)] rounded-md text-[var(--primary-black)] hover:bg-[var(--primary-gray)]"
                                                             >
                                                                 Annuler
                                                             </button>
@@ -268,7 +274,7 @@ class="relative">
                                                                 @endif
                                                                 <button 
                                                                     type="submit"
-                                                                    class="px-4 py-2 bg-[#2E7D32] text-white rounded-md hover:bg-[#1B5E20]"
+                                                                    class="px-4 py-2 bg-[var(--primary-green)] text-white rounded-md hover:bg-[#1B5E20]"
                                                                 >
                                                                     Confirmer
                                                                 </button>
@@ -280,7 +286,7 @@ class="relative">
                                         @else
                                             <a 
                                                 href="{{ route($customAction['route'], $item->id) }}"
-                                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                class="flex items-center px-4 py-2 text-sm text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)]"
                                             >
                                                 @if(isset($customAction['icon']))
                                                 <i class="{{ $customAction['icon'] }} mr-3"></i>

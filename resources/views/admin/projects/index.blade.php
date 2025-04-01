@@ -2,7 +2,7 @@
 @extends('layouts.admin')
 
 @section('header')
-    <h2 class="font-semibold text-xl text-gray-800 leading-tight ml-4">
+    <h2 class="font-semibold text-xl text-[var(--primary-black)] leading-tight ml-4">
         {{ __('Projets') }}
     </h2>
 @endsection
@@ -10,11 +10,11 @@
 @section('content')
     <div class="w-full mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
+            <div class="p-6 bg-white border-b border-[var(--primary-gray-light)]">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Liste des projets</h3>
+                    <h3 class="text-lg font-medium text-[var(--primary-black)]">Liste des projets</h3>
                     <a href="{{ route('admin.projects.create') }}" 
-                       class="bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-600 transition-colors duration-300">
+                       class="bg-[var(--primary-green)] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[var(--primary-green-dark)] transition-colors duration-300">
                         Créer un projet
                     </a>
                 </div>
@@ -30,7 +30,22 @@
                             'route' => 'admin.users.show',
                             'param' => 'user_id'
                         ]],
-                        ['name' => 'Contributeurs', 'key' => 'total_contributions_count','tooltip' => fn($item) => '<div><p>'.$item->total_amount.'</p></div>'],
+                        [
+                            'name' => 'Contributeurs',
+                            'key' => 'total_contributions_count',
+                            'tooltip' => fn($item) => '
+                                    <div class=grid grid-cols-2 gap-2>
+                                        <div class=font-medium>Financières:</div>
+                                        <div>'.$item->financial_contributions_count.' ('.$item->total_amount.'€)</div>
+                                        
+                                        <div class=font-medium>Matérielles:</div>
+                                        <div>'.$item->material_contributions_count.'</div>
+                                        
+                                        <div class=font-medium>Bénévoles:</div>
+                                        <div>'.$item->volunteer_contributions_count.'</div>
+                                    </div>
+                            ',
+                        ],
                         ['name' => 'Date création', 'key' => 'created_at','format'=> 'date']
                     ]" 
                     :data="$projets"

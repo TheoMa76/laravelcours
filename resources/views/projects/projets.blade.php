@@ -28,14 +28,14 @@
         }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-[var(--primary-gray-light)]">
     @include('layouts.navigation')
 
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8">Projets écologiques à soutenir en Normandie</h1>
 
         @if($projets->isEmpty())
-            <p class="text-center text-gray-600">Aucun projet n'est en cours dans la région.</p>
+            <p class="text-center text-[var(--primary-gray)]">Aucun projet n'est en cours dans la région.</p>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($projets as $projet)
@@ -48,15 +48,15 @@
                             <!-- Dates et utilisateur -->
                             <div class="flex justify-between items-center mb-4">
                                 <!-- Dates -->
-                                <span class="text-sm text-gray-500">
+                                <span class="text-sm text-[var(--primary-gray)]">
                                     {{ \Carbon\Carbon::parse($projet->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($projet->end_date)->format('d/m/Y') }}
                                 </span>
                                 <!-- Utilisateur -->
-                                <span class="text-sm text-gray-500">Créé par <span class="font-bold">{{ $projet->user->name }}</span></span>
+                                <span class="text-sm text-[var(--primary-gray)]">Créé par <span class="font-bold">{{ $projet->user->name }}</span></span>
                             </div>
 
                             <!-- Description -->
-                            <p class="text-gray-600 mb-4 description">{{ $projet->description }}</p>
+                            <p class="text-[var(--primary-gray)] mb-4 description">{{ $projet->description }}</p>
 
                             <!-- Informations supplémentaires -->
                             <div class="space-y-2">
@@ -65,7 +65,7 @@
                                     <span class="text-sm font-bold">{{ $projet->contributions->count() }}</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-sm text-green-500">Argent Collecté</span>
+                                    <span class="text-sm text-[var(--primary-green)]">Argent Collecté</span>
                                     <span class="text-sm font-bold">€{{ $projet->contributions->sum('amount') }}</span>
                                 </div>
                                 <div class="flex justify-between">
@@ -76,7 +76,7 @@
                         </div>
                         <!-- Lien pour participer -->
                         <a href="{{ route('projets.contribute', $projet->id) }}" class="absolute inset-0 bg-white bg-opacity-0 flex items-center justify-center opacity-0 hover:opacity-100 hover:bg-opacity-90 transition-opacity duration-300">
-                            <span class="text-lg font-semibold text-gray-800">Participer</span>
+                            <span class="text-lg font-semibold text-[var(--primary-black)]">Participer</span>
                         </a>
                     </div>
                 @endforeach
@@ -85,7 +85,7 @@
 
         <!-- Bouton "Devenez pionnier" -->
         <div class="text-center mt-8">
-            <a href="{{ route('projets.create') }}" class="bg-green-500 text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition-colors duration-300">Devenez pionnier</a>
+            <a href="{{ route('projets.create') }}" class="bg-[var(--primary-green)] text-white px-6 py-3 rounded-full text-lg font-semibold hover:bg-[var(--primary-green-dark)] transition-colors duration-300">Devenez pionnier</a>
         </div>
     </div>
 

@@ -30,14 +30,10 @@ function initDashboardCharts() {
                 fill: {
                     type: 'gradient',
                     gradient: {
-                        shade: 'dark',
                         type: 'vertical',
-                        shadeIntensity: 0.5,
-                        gradientToColors: ['#86EFAC'],
                         inverseColors: false,
                         opacityFrom: 0.8,
                         opacityTo: 0.2,
-                        stops: [0, 100]
                     }
                 }
             }],
@@ -46,13 +42,13 @@ function initDashboardCharts() {
                 type: 'area',
                 height: '95%'
             },
-            colors: ['#22C55E'],
+            colors: ['var(--primary-green)'],
             dataLabels: { enabled: false },
             xaxis: {
                 categories: JSON.parse(usersChartEl.dataset.labels || '[]'),
                 labels: {
                     style: {
-                        colors: '#000000',
+                        colors: 'var(--primary-black)',
                         fontSize: '12px',
                         fontFamily: 'Manrope, sans-serif'
                     }
@@ -63,13 +59,13 @@ function initDashboardCharts() {
             yaxis: {
                 labels: {
                     style: {
-                        colors: '#000000',
+                        colors: 'var(--primary-black)',
                         fontSize: '12px'
                     }
                 }
             },
             grid: {
-                borderColor: '#86EFAC',
+                borderColor: 'var(--primary-green-light)',
                 strokeDashArray: 4,
                 yaxis: { lines: { show: true } }
             },
@@ -100,14 +96,14 @@ function initDashboardCharts() {
                     distributed: false
                 }
             },
-            colors: ['#0D9488'],
+            colors: ['var(--primary-green)'],
             dataLabels: { enabled: false },
             stroke: { show: true, width: 2, colors: ['transparent'] },
             xaxis: {
                 categories: JSON.parse(projectsChartEl.dataset.labels || '[]'),
                 labels: {
                     style: {
-                        colors: '#000000',
+                        colors: 'var(--primary-black)',
                         fontSize: '12px',
                         fontFamily: 'Manrope, sans-serif'
                     }
@@ -119,13 +115,13 @@ function initDashboardCharts() {
                 min: 0,
                 labels: {
                     style: {
-                        colors: '#000000',
+                        colors: 'var(--primary-black)',
                         fontSize: '12px'
                     }
                 }
             },
             grid: {
-                borderColor: '#86EFAC',
+                borderColor: 'var(--primary-green-light)',
                 strokeDashArray: 4,
                 yaxis: { lines: { show: true } }
             },
@@ -150,7 +146,7 @@ function initDashboardCharts() {
                 height: '95%'
             },
             labels: ['Financières', 'Matérielles', 'Bénévolat'],
-            colors: ['#2E7D32', '#22C55E', '#86EFAC'],
+            colors: ['var(--primary-green-dark)', 'var(--primary-green)', 'var(--primary-green-light)'],
             dataLabels: {
                 enabled: true,
                 formatter: function(val) { 
@@ -162,7 +158,7 @@ function initDashboardCharts() {
                 position: 'bottom',
                 fontSize: '12px',
                 labels: {
-                    colors: '#000000',
+                    colors: 'var(--primary-black)',
                     useSeriesColors: false
                 },
                 markers: {
@@ -179,7 +175,7 @@ function initDashboardCharts() {
                             total: {
                                 show: true,
                                 label: 'Total',
-                                color: '#000000',
+                                color: 'var(--primary-black)',
                                 formatter: function() {
                                     return totalContributions === 0 ? '0' : totalContributions.toString();
                                 }

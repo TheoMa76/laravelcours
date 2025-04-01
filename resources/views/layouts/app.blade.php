@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-[var(--primary-gray-light)]">
             <!-- if user is admin display layouts.admin else display layouts.navigation -->
             @if (Auth::user()->is_admin)
                 @include('layouts.admin')
