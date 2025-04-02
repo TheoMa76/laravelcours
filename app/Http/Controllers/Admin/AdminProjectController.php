@@ -5,17 +5,26 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Projet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Traits\HandleSorting;
 
 class AdminProjectController extends Controller
 {
+    use HandleSorting;
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //get projects with every data related to it : user and contributions
-        $projets = Projet::with('user', 'contributions')->get();
+        $validSorts = ['id', 'name', 'description', 'status', 'start_date', 'goal', 'end_date'];
+        $relationSorts = ['user_name','financial_contributions_count','material_contributions_count',
+        'volunteer_contributions_count','total_amount','total_contributions_count'];
+
+        $projets = Projet::query();
+        
+        [$sort, $direction] = $this->applySorting($projets, $validSorts, $relationSorts);
+
+        $projets = $projets->paginate(20);
         foreach($projets as $projet){
             //compter le nombre de contribution par type : financière, matérielle, bénévolat
             $projet->financial_contributions_count = $projet->contributions->where('type', 'financière')->count();
@@ -25,6 +34,11 @@ class AdminProjectController extends Controller
             $projet->total_contributions_count = $projet->financial_contributions_count + $projet->material_contributions_count + $projet->volunteer_contributions_count;
             $projet->user_name = $projet->user->name;
         }
+
+        $projets->setCollection(
+            $this->sortCollection($projets->getCollection(), $sort, $direction, $relationSorts)
+        );
+
         return view('admin.projects.index', compact('projets'));
     }
 

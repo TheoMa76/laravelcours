@@ -7,28 +7,45 @@ use App\Models\Projet;
 use App\Models\Contribution;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Traits\HandleSorting;
 
 class AdminUserController extends Controller
 {
+    use HandleSorting;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $users = User::paginate(20);
+        $validSorts = ['id', 'name', 'email', 'created_at'];
+        $relationSorts = ['projects_count', 'contributions_count'];
+
+        $users = User::query();
+        
+        [$sort, $direction] = $this->applySorting($users, $validSorts, $relationSorts);
+
+        $users = $users->paginate(20);
+
         foreach ($users as $user) {
             $user->projets = Projet::where('user_id', $user->id)->pluck('name');
             $user->contributions = Contribution::where('user_id', $user->id)->get();
-            $user->projects_count = $user->projets->count();
-            $user->contributions_count = $user->contributions->count();
+
             $user->projects_supported_count = $user->contributions->pluck('projet_id')->unique()->count();
+            $user->contributions_count = $user->contributions->count();
+            $user->projects_count = $user->projets->count();
             $user->total_amount = $user->contributions->where('type', 'financière')->sum('amount');
-            $user->waiting_projects = Projet::where('user_id', $user->id)->where('status', 'en_attente')->pluck('name');
-            $user->en_cours_projects = Projet::where('user_id', $user->id)->where('status', 'en_cours')->pluck('name');
-            $user->finished_projects = Projet::where('user_id', $user->id)->where('status', 'terminé')->pluck('name');
-            $user->rejected_projects = Projet::where('user_id', $user->id)->where('status', 'rejeté')->pluck('name');
+            $user->waiting_projects = $user->projets->where('status', 'en_attente')->pluck('name');
+            $user->en_cours_projects = $user->projets->where('status', 'en_cours')->pluck('name');
+            $user->finished_projects = $user->projets->where('status', 'terminé')->pluck('name');
+            $user->rejected_projects = $user->projets->where('status', 'rejeté')->pluck('name');
         }
-        return view('admin.users.index', compact('users'));
+
+        $users->setCollection(
+            $this->sortCollection($users->getCollection(), $sort, $direction, $relationSorts)
+        );
+
+        return view('admin.users.index', compact('users', 'sort', 'direction'));
     }
 
     /**

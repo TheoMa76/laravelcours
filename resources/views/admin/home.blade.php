@@ -119,7 +119,7 @@
                         data-financial-total="{{ number_format($financialContributionsTotal, 2, '.', ' ') }}">
                     </div>
                     <div class="mt-4 text-center">
-                        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-4 py-2 bg-[var(--primary-green-dark)] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[var(--primary-green)] active:bg-[var(--primary-green)] focus:outline-none focus:border-[var(--primary-green-dark)] focus:ring ring-[var(--primary-green-light)] disabled:opacity-25 transition ease-in-out duration-150">
+                        <a href="{{ route('admin.contributions.index') }}" class="inline-flex items-center px-4 py-2 bg-[var(--primary-green-dark)] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[var(--primary-green)] active:bg-[var(--primary-green)] focus:outline-none focus:border-[var(--primary-green-dark)] focus:ring ring-[var(--primary-green-light)] disabled:opacity-25 transition ease-in-out duration-150">
                             Voir les détails
                         </a>
                     </div>

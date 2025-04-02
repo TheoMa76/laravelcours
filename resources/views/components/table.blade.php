@@ -50,7 +50,7 @@ class="relative">
                 <tr>
                     @foreach($columns as $column)
                     <th 
-                        class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider cursor-pointer hover:bg-[var(--primary-green-dark)]"
+                        class="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider cursor-pointer hover:bg-[var(--primary-green-dark)]"
                         @click="updateSort('{{ $column['key'] }}')"
                     >
                         <div class="flex justify-between items-center">
@@ -62,7 +62,7 @@ class="relative">
                     </th>
                     @endforeach
                     @if($actions['view'] || $actions['edit'] || $actions['delete'] || !empty($actions['custom']))
-                    <th class="px-6 py-3 text-left text-xs font-medium text-white cursor-default uppercase tracking-wider">
+                    <th class="px-6 py-3 text-center text-xs font-medium text-white cursor-default uppercase tracking-wider">
                         Actions
                     </th>
                     @endif
@@ -72,7 +72,7 @@ class="relative">
                 @foreach($data as $item)
                 <tr class="{{ $loop->even ? 'bg-[var(--primary-green-superlight)]' : 'bg-white' }} hover:bg-[var(--primary-light-hover)]">
                     @foreach($columns as $column)
-                    <td class="px-6 py-4 whitespace-nowrap cursor-default text-sm text-[var(--primary-black)]">
+                    <td class="px-6 py-4 whitespace-nowrap cursor-default text-center text-sm text-[var(--primary-black)]">
                         @if(isset($column['tooltip']))
                             <div x-data="{ showTooltip: false }" class="relative inline-block">
                                 <!-- Élément déclencheur -->
@@ -152,7 +152,7 @@ class="relative">
                     @endforeach
                     
                     @if($actions['view'] || $actions['edit'] || $actions['delete'] || !empty($actions['custom']))
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                         <div class="relative inline-block text-left">
                             <button 
                                 @click="toggleActionMenu('{{ $item->id }}')"

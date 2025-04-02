@@ -1,11 +1,6 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @extends('layouts.admin')
 
-@section('header')
-    <h2 class="font-semibold text-xl text-[var(--primary-black)] leading-tight ml-4">
-        {{ __('Contributions') }}
-    </h2>
-@endsection
 
 @section('content')
                 <div class="flex justify-between items-center mb-4">

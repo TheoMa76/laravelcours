@@ -27,22 +27,26 @@ function initDashboardCharts() {
             series: [{
                 name: 'Utilisateurs',
                 data: JSON.parse(usersChartEl.dataset.values || '[]'),
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        type: 'vertical',
-                        inverseColors: false,
-                        opacityFrom: 0.8,
-                        opacityTo: 0.2,
-                    }
-                }
             }],
             chart: {
                 ...commonOptions.chart,
                 type: 'area',
                 height: '95%'
             },
-            colors: ['var(--primary-green)'],
+            colors: ['var(--primary-green-dark)'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shade: 'light',
+                    shadeIntensity: 1,
+                    gradientToColors: ['var(--primary-green-light)'],
+                    gradientFromColors: ['var(--primary-green)'],
+                    type: 'vertical',
+                    opacityFrom: 1,
+                    style: 'circles',
+                    opacityTo: 1,
+                }
+            },
             dataLabels: { enabled: false },
             xaxis: {
                 categories: JSON.parse(usersChartEl.dataset.labels || '[]'),

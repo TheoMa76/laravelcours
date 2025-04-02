@@ -5,20 +5,33 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Contribution;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Traits\HandleSorting;
 
 class AdminContributionController extends Controller
 {
+    use HandleSorting;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $contributions = Contribution::with('user', 'projet')->get();
+
+        $validSorts = ['id', 'user_id', 'amount', 'type', 'created_at'];
+        $relationSorts = ['user_name', 'project_name'];
+        $contributions = Contribution::query();
+
+        [$sort, $direction] = $this->applySorting($contributions, $validSorts, $relationSorts);
+        $contributions = $contributions->paginate(20);
+
         foreach ($contributions as $contribution) {
             $contribution->user_name = $contribution->user->name;
             $contribution->project_name = $contribution->projet->name;
             $contribution->type = ucfirst($contribution->type);
         }
+
+        $contributions->setCollection(
+            $this->sortCollection($contributions->getCollection(), $sort, $direction, $relationSorts)
+        );
         return view('admin.contributions.index', compact('contributions'));
     }
 
