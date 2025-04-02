@@ -1,11 +1,11 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-[var(--primary-black)]">
-            {{ __('Profile Information') }}
+            {{ __('Information') }}
         </h2>
 
         <p class="mt-1 text-sm text-[var(--primary-gray)]">
-            {{ __("Update your account's profile information and email address.") }}
+            {{ __("Mettez à jour les informations relative à votre compte.") }}
         </p>
     </header>
 
@@ -18,7 +18,7 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Nom')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
@@ -31,16 +31,16 @@
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
                     <p class="text-sm mt-2 text-[var(--primary-black)]">
-                        {{ __('Your email address is unverified.') }}
+                        {{ __('Votre e-mail n\'a pas été confirmée.') }}
 
                         <button form="send-verification" class="underline text-sm text-[var(--primary-gray)] hover:text-[var(--primary-black)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
+                            {{ __('Cliquez ici pour renvoyer l\'email') }}
                         </button>
                     </p>
 
                     @if (session('status') === 'verification-link-sent')
                         <p class="mt-2 font-medium text-sm text-[var(--primary-green)]">
-                            {{ __('A new verification link has been sent to your email address.') }}
+                            {{ __('Un nouveau lien de vérification à été envoyé à votre e-mail.') }}
                         </p>
                     @endif
                 </div>
@@ -48,7 +48,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button class="bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)]">{{ __('Sauvegarder') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -57,7 +57,7 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-[var(--primary-gray)]"
-                >{{ __('Saved.') }}</p>
+                >{{ __('Le profil à été modifié.') }}</p>
             @endif
         </div>
     </form>

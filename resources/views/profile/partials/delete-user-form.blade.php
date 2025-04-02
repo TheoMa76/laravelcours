@@ -12,6 +12,7 @@
     <x-danger-button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
+        class="bg-[var(--primary-red)] hover:bg-[var(--primary-red-dark)]"
     >{{ __('Supprimer le compte') }}</x-danger-button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
@@ -46,7 +47,7 @@
                     {{ __('Annuler') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3">
+                <x-danger-button class="ms-3 bg-[var(--primary-red)] hover:bg-[var(--primary-red-dark)]">
                     {{ __('Supprimer le compte') }}
                 </x-danger-button>
             </div>

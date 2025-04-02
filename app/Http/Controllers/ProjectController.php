@@ -124,14 +124,14 @@ class ProjectController extends Controller
 
     public function contributeForm($id){
         $projet = Projet::findOrFail($id);
-        return view('projects.contribute', compact('projet'));
-    }
-
-    public function countContribution($id){
         $projet = Projet::findOrFail($id);
-        $count = $projet->contributions->count();
-        $totalAmount = $projet->contributions->sum('amount');
-        
-        return view('projects.count', compact('count','amount'));
+        $projet->contributions = Contribution::where('projet_id', $id)->get();
+        $projet->totalAmount = $projet->contributions->where('type','financière')->sum('amount');
+        $projet->contributionCount = $projet->contributions->count();
+        if($projet->contributionCount == 0){
+            $projet->contributionCount = 1;
+            $projet->amount = 0;
+        }
+        return view('projects.contribute', compact('projet'));
     }
 }

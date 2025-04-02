@@ -14,7 +14,7 @@
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Mot de passe')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -27,20 +27,20 @@
         <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-[var(--primary-gray)] text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-[var(--primary-gray)]">{{ __('Remember me') }}</span>
+                <input id="remember_me" type="checkbox" class="rounded border-[var(--primary-gray)] text-[var(--primary-green)] shadow-sm focus:ring-[var(--primary-green-light)]" name="remember">
+                <span class="ms-2 text-sm text-[var(--primary-gray)]">{{ __('Rester connecté') }}</span>
             </label>
         </div>
 
         <div class="flex items-center justify-end mt-4">
             @if (Route::has('password.request'))
-                <a class="underline text-sm text-[var(--primary-gray)] hover:text-[var(--primary-black)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                <a class="underline text-sm text-[var(--primary-gray)] hover:text-[var(--primary-black)] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-green-light)]" href="{{ route('password.request') }}">
+                    {{ __('Mot de passe oublié ?') }}
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+            <x-primary-button class="ms-3 bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)] focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary-green-light)]">
+                {{ __('Se connecter') }}
             </x-primary-button>
         </div>
     </form>
