@@ -1,8 +1,6 @@
 <x-admin-layout>
     @section('content')
-        <div class="container w-full mx-auto px-4 py-6">
-            <h1 class="text-2xl font-bold text-[var(--primary-black)] mb-6">Tableau de bord administratif</h1>
-
+            <h2 class="text-2xl font-bold text-[var(--primary-black)] mb-6">Tableau de bord administratif</h2>
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <!-- Users Card -->
@@ -165,7 +163,6 @@
                     </div>
                 </div>
             </div>
-        </div>
         @endsection
 </x-admin-layout>
 

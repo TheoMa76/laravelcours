@@ -1,8 +1,8 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-@extends('layouts.admin')
 
+<x-admin-layout>
 @section('content')
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+    <div class="bg-white shadow-sm sm:rounded-lg">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-medium text-[var(--primary-black)]">Liste des projets</h3>
             <a href="{{ route('admin.projects.create') }}" 
@@ -60,3 +60,4 @@
         />
     </div>
 @endsection
+</x-admin-layout>

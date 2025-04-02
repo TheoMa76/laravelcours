@@ -50,7 +50,7 @@ class="relative">
                 <tr>
                     @foreach($columns as $column)
                     <th 
-                        class="px-6 py-3 text-right text-xs font-medium text-white uppercase tracking-wider cursor-pointer hover:bg-[var(--primary-green-dark)]"
+                        class="px-6 py-3 text-center text-xs font-medium text-white uppercase tracking-wider cursor-pointer hover:bg-[var(--primary-green-dark)]"
                         @click="updateSort('{{ $column['key'] }}')"
                     >
                         <div class="flex justify-between items-center">

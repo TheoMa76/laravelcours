@@ -1,7 +1,6 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
-@extends('layouts.admin')
 
-
+<x-admin-layout>
 @section('content')
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-medium text-[var(--primary-black)]">Liste des Contributions</h3>
@@ -30,3 +29,4 @@
                     ]"
                 />
 @endsection
+</x-admin-layout>
