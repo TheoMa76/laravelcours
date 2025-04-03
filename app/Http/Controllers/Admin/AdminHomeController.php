@@ -18,7 +18,7 @@ class AdminHomeController extends Controller
         $contributionCount = Contribution::count();
         $pendingProjects = Projet::where('status', 'en_attente')->count();
         
-        $financialContributionsTotal = Contribution::where('type', 'financière')
+        $financialContributionsTotal = Contribution::where('contribution_type_id', '1')
             ->sum('amount') ?? 0;
 
         $isWeekly = request()->has('weeklyStats');
@@ -47,9 +47,9 @@ class AdminHomeController extends Controller
         }
         
         $contributionsData = [
-            Contribution::where('type', 'financière')->count(),
-            Contribution::where('type', 'matérielle')->count(),
-            Contribution::where('type', 'bénévolat')->count()
+            Contribution::where('contribution_type_id', '1')->count(),
+            Contribution::where('contribution_type_id', '2')->count(),
+            Contribution::where('contribution_type_id', '3')->count()
         ];
 
         return view('admin.home', compact(
