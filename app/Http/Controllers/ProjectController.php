@@ -23,48 +23,49 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
-    public function store(Request $request){
-        \Log::info('Début de la méthode store');
-    
-        $validatedData = $request->validate([
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'short_description' => 'required|string|max:255',
             'description' => 'required|string',
-            'status' => 'required|string',
             'start_date' => 'required|date',
-            'goal' => 'required|numeric',
-            'end_date' => 'required|date',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'money_goal' => 'required|numeric|min:0',
+            'volunteer_hour_goal' => 'nullable|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-    
-    
-        $projet = new Projet();
-        $projet->name = $validatedData['name'];
-        $projet->description = $validatedData['description'];
-        $projet->status = $validatedData['status'];
-        $projet->start_date = $validatedData['start_date'];
-        $projet->goal = $validatedData['goal'];
-        $projet->end_date = $validatedData['end_date'];
-        $projet->user_id = auth()->id();
-    
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $extension = $image->getClientOriginalExtension();
-            $imageName = Str::uuid() . '.' . $extension;
-            $image->move(public_path('images'), $imageName);
-            $projet->image = $imageName;
-        } else {
-            \Log::info('Aucun fichier image reçu.');
-        }
-    
-        \Log::info('Projet avant sauvegarde : ', $projet->toArray());
-    
-        $projet->save();
-    
-        \Log::info('Projet sauvegardé avec succès');
-    
-        return redirect()->route('projets')->with('success', 'Merci d\'aider la planète !');
-    }
 
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('project_images', 'public');
+            $validated['image'] = $imagePath;
+        }
+        $validated['status'] = 'en_attente';
+        $validated['user_id'] = auth()->id();
+        $project = Projet::create($validated);
+    
+
+        if ($request->needsMaterials && $request->materials) {
+            foreach ($request->materials as $material) {
+                $project->materials()->create([
+                    'material_category_id' => $material['material_category_id'],
+                    'additional' => $material['additional'] ?? null,
+                ]);
+            }
+        }
+
+        if ($request->needsVolunteers && $request->roles) {
+            foreach ($request->roles as $role) {
+                $project->volunteerRoles()->create([
+                    'name' => $role['name'],
+                    'description' => $role['description'],
+                    'volunteer_hours_needed' => $role['volunteer_hours_needed'],
+                ]);
+            }
+        }
+
+        return redirect()->route('projets')->with('success', 'Projet créé avec succès!');
+    }
     public function show($id){
         $projet = Projet::findOrFail($id);
         return view('projects.show', compact('projet'));
