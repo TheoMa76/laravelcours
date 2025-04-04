@@ -116,7 +116,7 @@
                                     </div>
                                     <div class="bg-gray-50 rounded-lg p-3 text-center">
                                         <span class="block text-sm text-[var(--primary-gray)]">Jours restants</span>
-                                        <span class="block text-lg font-bold text-[var(--primary-black)]">{{ \Carbon\Carbon::now()->diffInDays($projet->end_date) }}</span>
+                                        <span class="block text-lg font-bold text-[var(--primary-black)]">{{ intval(\Carbon\Carbon::now()->diffInDays($projet->end_date)) }}</span>
                                     </div>
                                 </div>
 
