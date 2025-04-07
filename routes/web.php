@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\Admin\AdminProjectController;
@@ -9,9 +10,8 @@ use App\Http\Controllers\Admin\AdminContributionController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HomeController::class, 'index'])->name('');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projets', [ProjectController::class, 'index'])->name('projets');
@@ -45,14 +45,6 @@ Route::middleware([EnsureUserIsAdmin::class])->group(function () {
 
     Route::get('/admin/dashboard', [AdminHomeController::class, 'stats'])->name('admin.dashboard');
 });
-
-Route::get('/test-gate', function() {
-    dd([
-        'user_role' => auth()->user()->role,
-        'is_admin' => Gate::allows('admin'),
-        'user' => auth()->user()
-    ]);
-})->middleware('auth');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

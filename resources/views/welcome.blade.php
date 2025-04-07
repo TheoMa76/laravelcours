@@ -51,7 +51,7 @@
                     <h2 class="text-2xl font-bold mb-6 text-center">Nos Projets</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        @forelse ($projects as $project)
+                        @forelse ($projets as $project)
                             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 transition-all hover:shadow-lg">
                                 @if (isset($project->imagePath))
                                     <div class="h-48 overflow-hidden">
