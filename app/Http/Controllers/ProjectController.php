@@ -20,7 +20,8 @@ class ProjectController extends Controller
     }
 
     public function create(){
-        return view('projects.create');
+        $edit = false;
+        return view('projects.create', compact('edit'));
     }
 
     public function store(Request $request)
@@ -33,7 +34,7 @@ class ProjectController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'money_goal' => 'required|numeric|min:0',
             'volunteer_hour_goal' => 'nullable|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
         ]);
 
         if ($request->hasFile('image')) {
@@ -73,7 +74,8 @@ class ProjectController extends Controller
 
     public function edit($id){
         $projet = Projet::findOrFail($id);
-        return view('projects.edit', compact('projet'));
+        $edit = true;
+        return view('projects.create', compact('projet', 'edit'));
     }
 
     public function update(Request $request, $id){
