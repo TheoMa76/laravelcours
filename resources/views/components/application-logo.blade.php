@@ -1,4 +1,1 @@
-<svg width="80" height="80" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
-    <circle cx="100" cy="85" r="70" stroke="#2E7D32" stroke-width="8" fill="#F4F4F4"/>
-    <path d="M100 140 C70 110, 50 90, 50 70 C50 50, 70 30, 100 50 C130 30, 150 50, 150 70 C150 90, 130 110, 100 140 Z" fill="#388E3C" stroke="#1B5E20" stroke-width="4"/>
-</svg>
+<img width="30" height="46" src="{{ asset('images/greenPot.png') }}" alt="Logo" class="w-8 h-10" />

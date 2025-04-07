@@ -1,9 +1,30 @@
+@import 'toastify-js/src/toastify.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-    --bgButton: oklch(66.59% 0.2486 140.19) !important;
-    --bgButtonHover: oklch(79.76% 0.2486 140.19) !important;
-    --navBg: oklch(73.36% 0.2495 147.99) !important;
+    --primary-green : #2E7D32;
+    --primary-green-light : #86EFAC;
+    --primary-green-superlight : rgba(208, 254, 219, 0.841);
+    --primary-green-dark : #1B5E20;
+    --primary-blue : #1D4ED8;
+    --primary-blue-hover : #1E40AF;
+    --primary-red : #DC2626;
+    --primary-red-dark : #B91C1C;
+    --primary-light-hover : #dedede;
+    --primary-black : #111827;
+    --primary-gray : #7a7a7a;
+    --primary-gray-dark : #636363;
+    --primary-gray-light : #f3f4f6;
+  };
+
+  h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+  
+  body, p, button {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
   }

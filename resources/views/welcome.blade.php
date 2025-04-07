@@ -6,26 +6,18 @@
 
         <title>GreenPot</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @endif
     </head>
-    <style>
-        .bg-button{
-            background-color: blue;
-        }
-    </style>
     <body>
         <div class="flex p-6 lg:p-8 items-center min-h-screen flex-col">
             <div class="fixed top-0 left-0 w-full shadow-md p-4 lg:px-8 z-50 bg-white mb-10">
                 <nav class="flex items-center justify-between w-full max-w-6xl mx-auto">
                     <a href="{{ url('/') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('images/logo.svg') }}" alt="Logo" class="w-8 h-8" />
+                        <img src="{{ asset('images/greenPot.png') }}" alt="Logo" class="w-8 h-8" />
                         <span class="text-lg font-bold">GreenPot</span>
                     </a>
                     @if (Route::has('login'))
