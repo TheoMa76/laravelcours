@@ -20,43 +20,50 @@
                 <div class="w-24"></div>
             </div>
 
+            @if(isset($projet))
             <div class="flex flex-col lg:flex-row gap-8">
                 <!-- Left side - Project details -->
                 <div class="lg:w-2/3 space-y-6">
                     <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
                         <div class="flex flex-col md:flex-row gap-6">
                             <div class="md:w-1/3">
-                                <img class="w-full h-48 object-cover rounded-lg" src="{{ asset('images/' . $projet->image) }}" alt="{{ $projet->name }}">
+                                <img class="w-full h-48 object-cover rounded-lg" src="{{ isset($projet->image) ? asset('images/' . $projet->image) : asset('images/default-project.jpg') }}" alt="{{ isset($projet->name) ? $projet->name : 'Projet sans nom' }}">
                             </div>
                             <div class="md:w-2/3">
-                                <h2 class="text-2xl font-bold text-primary-black mb-2">{{ $projet->name }}</h2>
-                                <p class="text-primary-gray-dark mb-4">{{ $projet->description }}</p>
+                                <h2 class="text-2xl font-bold text-primary-black mb-2">{{ isset($projet->name) ? $projet->name : 'Projet sans nom' }}</h2>
+                                <p class="text-primary-gray-dark mb-4">{{ isset($projet->short_description) ? $projet->short_description : '' }}</p>
                                 
                                 <div class="mb-4">
                                     <div class="w-full bg-gray-200 rounded-full h-2.5">
                                         <div class="h-2.5 rounded-full" 
-                                             style="width: {{ min(100, ($projet->totalAmount / $projet->goal ) * 100) }}%;
+                                             style="width: {{ isset($projet->totalAmount, $projet->money_goal) ? min(100, ($projet->totalAmount / $projet->money_goal ) * 100) : 0 }}%;
                                              background-color: 
-                                             @if(($projet->totalAmount / $projet->goal) * 100 < 25)
-                                                 var(--primary-green-superlight)
-                                             @elseif(($projet->totalAmount / $projet->goal) * 100 < 50)
-                                                 var(--primary-green-light)
-                                             @elseif(($projet->totalAmount / $projet->goal) * 100 < 75)
-                                                 var(--primary-green)
+                                             @if(isset($projet->totalAmount, $projet->money_goal))
+                                                 @if(($projet->totalAmount / $projet->money_goal) * 100 < 25)
+                                                     var(--primary-green-superlight)
+                                                 @elseif(($projet->totalAmount / $projet->money_goal) * 100 < 50)
+                                                     var(--primary-green-light)
+                                                 @elseif(($projet->totalAmount / $projet->money_goal) * 100 < 75)
+                                                     var(--primary-green)
+                                                 @else
+                                                     var(--primary-green-dark)
+                                                 @endif
                                              @else
-                                                 var(--primary-green-dark)
+                                                 var(--primary-green-superlight)
                                              @endif">
                                         </div>
                                     </div>
                                     <div class="flex justify-between mt-2 text-sm text-primary-gray">
-                                        <span>{{ number_format($projet->totalAmount, 0, ',', ' ') }} € collectés</span>
-                                        <span>Objectif : {{ number_format($projet->goal, 0, ',', ' ') }} €</span>
+                                        <span>{{ isset($projet->totalAmount) ? number_format($projet->totalAmount, 0, ',', ' ') : 0 }} € collectés</span>
+                                        <span>Objectif : {{ isset($projet->money_goal) ? number_format($projet->money_goal, 0, ',', ' ') : 0 }} €</span>
                                     </div>
                                 </div>
                                 
                                 <div class="flex flex-wrap items-center gap-4 text-sm text-primary-gray-dark">
-                                    <span class="flex items-center"><i class="fas fa-calendar-alt mr-1"></i> {{ $projet->end_date->format('d/m/Y') }}</span>
-                                    <span class="flex items-center"><i class="fas fa-users mr-1"></i> {{ $projet->contributions->count() }} contributeurs</span>
+                                    @if(isset($projet->end_date))
+                                        <span class="flex items-center"><i class="fas fa-calendar-alt mr-1"></i> {{ $projet->end_date->format('d/m/Y') }}</span>
+                                    @endif
+                                    <span class="flex items-center"><i class="fas fa-users mr-1"></i> {{ isset($projet->contributions) ? $projet->contributions->count() : 0 }} contributeurs</span>
                                 </div>
                             </div>
                         </div>
@@ -64,17 +71,15 @@
                     
                     <div class="bg-white rounded-xl shadow-md overflow-hidden p-6">
                         <h3 class="text-xl font-semibold text-primary-black mb-4">À propos du projet</h3>
-                        <p class="text-primary-gray-dark whitespace-pre-line">{{ $projet->description }}</p>
+                        <p class="text-primary-gray-dark whitespace-pre-line">{{ isset($projet->description) ? $projet->description : 'Aucune description disponible pour ce projet.' }}</p>
                     </div>
                 </div>
 
-                <!-- Right side - Contribution form -->
                 <div class="lg:w-1/3">
                     <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 sticky top-6">
                         <h3 class="text-xl font-semibold text-primary-black mb-4">Faire un don</h3>
                         <p class="text-primary-gray-dark mb-6">Choisissez comment vous souhaitez contribuer</p>
                         
-                        <!-- Tabs for donation types -->
                         <div x-data="{ activeTab: 'financial' }" class="mb-6">
                             <div class="flex border-b border-gray-200">
                                 <button 
@@ -100,9 +105,8 @@
                                 </button>
                             </div>
                             
-                            <!-- Financial donation form -->
                             <div x-show="activeTab === 'financial'" class="mt-6">
-                                <form action="{{ route('projets.contribute.submit', $projet->id) }}" method="POST">
+                                <form action="{{ route('projets.contribute.submit', isset($projet->id) ? $projet->id : '') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="donation_type" value="financial">
                                     
@@ -148,9 +152,8 @@
                                 </form>
                             </div>
                             
-                            <!-- Material donation form -->
                             <div x-show="activeTab === 'material'" class="mt-6">
-                                <form action="{{ route('projets.contribute.submit', $projet->id) }}" method="POST">
+                                <form action="{{ route('projets.contribute.submit', isset($projet->id) ? $projet->id : '') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="donation_type" value="material">
                                     
@@ -159,7 +162,7 @@
                                             Matériel dont nous avons besoin
                                         </label>
                                         <div class="space-y-3 mb-4">
-                                            @foreach($materiels ?? [
+                                            @foreach(isset($materiels) ? $materiels : [
                                                 ['id' => 1, 'name' => 'Outils de jardinage', 'description' => 'Pelles, râteaux, etc.'],
                                                 ['id' => 2, 'name' => 'Matériaux de construction', 'description' => 'Bois, vis, clous'],
                                                 ['id' => 3, 'name' => 'Plantes et arbustes', 'description' => 'Espèces locales adaptées'],
@@ -233,9 +236,8 @@
                                 </form>
                             </div>
                             
-                            <!-- Volunteer form -->
                             <div x-show="activeTab === 'volunteer'" class="mt-6">
-                                <form action="{{ route('projets.contribute.submit', $projet->id) }}" method="POST">
+                                <form action="{{ route('projets.contribute.submit', isset($projet->id) ? $projet->id : '') }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="donation_type" value="volunteer">
                                     
@@ -250,7 +252,7 @@
                                             required
                                         >
                                             <option value="" disabled selected>Sélectionnez un rôle</option>
-                                            @foreach($roles ?? [
+                                            @foreach(isset($roles) ? $roles : [
                                                 ['id' => 1, 'name' => 'Jardinage', 'description' => 'Plantation et entretien des espaces verts'],
                                                 ['id' => 2, 'name' => 'Construction', 'description' => 'Aide à l\'assemblage des structures'],
                                                 ['id' => 3, 'name' => 'Coordination', 'description' => 'Organisation des équipes de bénévoles'],
@@ -355,28 +357,33 @@
                     </div>
                 </div>
             </div>
+            @else
+                <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 text-center">
+                    <h3 class="text-xl font-semibold text-primary-black mb-4">Projet non trouvé</h3>
+                    <p class="text-primary-gray-dark">Le projet que vous cherchez n'existe pas ou a été supprimé.</p>
+                    <a href="{{ route('projets') }}" class="mt-4 inline-block bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)] text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                        Retour à la liste des projets
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Amount buttons functionality
             const amountInput = document.getElementById('amount');
             const amountButtons = document.querySelectorAll('.amount-btn');
             
             amountButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    // Remove active class from all buttons
                     amountButtons.forEach(btn => {
                         btn.classList.remove('bg-[var(--primary-green)]', 'text-white');
                         btn.classList.add('bg-[var(--primary-green-superlight)]', 'text-[var(--primary-green-dark)]');
                     });
                     
-                    // Add active class to clicked button
                     this.classList.remove('bg-[var(--primary-green-superlight)]', 'text-[var(--primary-green-dark)]');
                     this.classList.add('bg-[var(--primary-green)]', 'text-white');
                     
-                    // Set amount value
                     const amount = this.textContent.replace('€', '').trim();
                     amountInput.value = amount;
                 });

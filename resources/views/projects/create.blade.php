@@ -120,7 +120,7 @@
                                     <label for="image" class="text-sm font-medium text-primary-gray-dark mb-2">Image du projet</label>
                                     <input type="file" id="image" name="image" accept="image/*"
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
-                                    <p class="mt-1 text-sm text-primary-gray">Format recommandé : JPG, PNG. Max 2MB.</p>
+                                    <p class="mt-1 text-sm text-primary-gray">Format recommandé : JPG, PNG, WEBP. Max 2MB.</p>
                                     @error('image')
                                         <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('image') }}</p>
                                     @enderror
@@ -138,7 +138,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label for="start_date" class="text-sm font-medium text-primary-gray-dark mb-2">Date de début <span class="text-[var(--primary-red)]">*</span></label>
-                                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date'), \Carbon\Carbon::parse($projet->start_date)->format('Y-m-d') ?? '' }}" required
+                                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date'), isset($projet) ? \Carbon\Carbon::parse($projet->start_date)->format('Y-m-d') : '' }}" required
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
                                         @error('start_date')
                                             <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('start_date') }}</p>
@@ -147,7 +147,7 @@
                                     
                                     <div>
                                         <label for="end_date" class="text-sm font-medium text-primary-gray-dark mb-2">Date de fin <span class="text-[var(--primary-red)]">*</span></label>
-                                        <input type="date" id="end_date" name="end_date" value="{{ old('end_date'), \Carbon\Carbon::parse($projet->end_date)->format('Y-m-d') ?? '' }}" required
+                                        <input type="date" id="end_date" name="end_date" value="{{ old('end_date'), isset($projet) ? \Carbon\Carbon::parse($projet->end_date)->format('Y-m-d') : '' }}" required
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
                                         @error('end_date')
                                             <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('end_date') }}</p>
@@ -422,12 +422,11 @@
                                         <select name="materials[${this.materialCounter-1}][material_category_id]" required
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
                                             <option value="" disabled selected>Sélectionnez une catégorie</option>
-                                            @foreach($materialCategories ?? [
+                                            @foreach($material_categories ?? [
                                                 ['id' => 1, 'name' => 'Outils'],
                                                 ['id' => 2, 'name' => 'Matériaux de construction'],
                                                 ['id' => 3, 'name' => 'Plantes et végétaux'],
                                                 ['id' => 4, 'name' => 'Peinture et décoration'],
-                                                ['id' => 5, 'name' => 'Équipement électrique'],
                                             ] as $category)
                                                 <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
                                             @endforeach
@@ -436,7 +435,7 @@
                                     
                                     <div>
                                         <label class=" text-sm font-medium text-primary-gray-dark mb-2">Informations supplémentaires</label>
-                                        <input type="text" name="materials[${this.materialCounter-1}][additional]" 
+                                        <input type="text" name="materials[${this.materialCounter-1}][description]" 
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]"
                                             placeholder="Précisions, quantité, etc.">
                                     </div>
@@ -556,7 +555,6 @@
                 },
                 
                 calculateGlobalCompletion() {
-                    // This line ensures the function is re-evaluated when progressVersion changes
                     const version = this.progressVersion;
                     
                     let totalFields = 0;
@@ -567,14 +565,12 @@
                         if (el.type === 'checkbox' || el.type === 'radio') {
                             return el.checked;
                         }
-                        // For selects, check if a non-default option is selected
                         if (el.tagName === 'SELECT') {
                             return el.selectedIndex > 0;
                         }
                         return el.value && el.value.trim() !== '';
                     };
 
-                    // Count general fields
                     const generalFieldIds = [
                         'name', 'short_description', 'description',
                         'start_date', 'end_date', 'money_goal', 'status'
@@ -588,7 +584,6 @@
                         }
                     });
                     
-                    // Count volunteer_hour_goal only if needsVolunteers is checked
                     if (this.needsVolunteers) {
                         const volunteerHourGoal = document.getElementById('volunteer_hour_goal');
                         if (volunteerHourGoal) {
@@ -597,7 +592,6 @@
                         }
                     }
 
-                    // Count materials fields if needsMaterials is checked
                     if (this.needsMaterials) {
                         const materialItems = document.querySelectorAll('.material-item');
                         materialItems.forEach(item => {
@@ -609,7 +603,6 @@
                         });
                     }
 
-                    // Count volunteers fields if needsVolunteers is checked
                     if (this.needsVolunteers) {
                         const roleItems = document.querySelectorAll('.role-item');
                         roleItems.forEach(item => {
@@ -636,45 +629,35 @@
                 },
 
                 setupProgressTracking() {
-                    // Create a reactive property to force updates
                     this.progressVersion = 0;
                     
-                    // Function to trigger progress update
                     const updateProgress = () => {
-                        // Increment the version to force Alpine to re-evaluate
                         this.progressVersion++;
                     };
                     
-                    // Add input event listeners to all form fields
                     const addFieldListeners = (parent = document) => {
                         parent.querySelectorAll('input, select, textarea').forEach(field => {
                             field.addEventListener('input', updateProgress);
                             field.addEventListener('change', updateProgress);
-                            // For checkboxes and radios
                             if (field.type === 'checkbox' || field.type === 'radio') {
                                 field.addEventListener('click', updateProgress);
                             }
                         });
                     };
                     
-                    // Initial setup for existing fields
                     addFieldListeners();
                     
-                    // Setup observers for dynamically added content
                     const setupContainerObserver = (containerId, fieldSelector) => {
                         const container = document.getElementById(containerId);
                         if (!container) return;
                         
-                        // Observer for when items are added/removed
                         const observer = new MutationObserver((mutations) => {
                             mutations.forEach(mutation => {
                                 if (mutation.type === 'childList') {
-                                    // New nodes were added or removed
                                     updateProgress();
                                     
-                                    // Add listeners to any new fields
                                     mutation.addedNodes.forEach(node => {
-                                        if (node.nodeType === 1) { // Element node
+                                        if (node.nodeType === 1) {
                                             addFieldListeners(node);
                                         }
                                     });
@@ -682,13 +665,11 @@
                             });
                         });
                         
-                        // Start observing
                         observer.observe(container, { 
                             childList: true,
                             subtree: true
                         });
                         
-                        // Add event delegation for dynamically added fields
                         container.addEventListener('input', updateProgress, true);
                         container.addEventListener('change', updateProgress, true);
                         container.addEventListener('click', (e) => {
@@ -698,11 +679,9 @@
                         }, true);
                     };
                     
-                    // Setup observers for materials and roles containers
                     setupContainerObserver('materials-container', '.material-item');
                     setupContainerObserver('roles-container', '.role-item');
                     
-                    // Force update when tabs change
                     this.$watch('activeTab', () => updateProgress());
                     this.$watch('needsMaterials', () => updateProgress());
                     this.$watch('needsVolunteers', () => updateProgress());

@@ -76,7 +76,7 @@ class="relative w-full">
                         @foreach($data as $item)
                         <tr class="{{ $loop->even ? 'bg-[var(--primary-green-superlight)]' : 'bg-white' }} hover:bg-[var(--primary-light-hover)] transition-colors duration-150">
                             @foreach($columns as $column)
-                            <td class="px-2 py-2 md:px-4 md:py-3 cursor-default text-center text-xs text-[var(--primary-black)]">
+                            <td class="px-2 py-2 md:px-4 md:py-3 cursor-default text-center text-sm text-[var(--primary-black)]">
                                 <div class="max-w-[80px] md:max-w-xs truncate inline-block">
                                     @if(isset($column['tooltip']))
                                         <div x-data="{ showTooltip: false }" class="relative inline-block">

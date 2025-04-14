@@ -75,23 +75,14 @@
                             </div>
                             
                             <div class="p-6">
-                                <!-- Nom du projet -->
                                 <h2 class="text-xl font-bold text-[var(--primary-black)] mb-2">{{ $projet->name }}</h2>
-
-                                <!-- Dates et utilisateur -->
                                 <div class="flex justify-between items-center mb-4">
-                                    <!-- Dates -->
                                     <span class="text-sm text-[var(--primary-gray)]">
                                         {{ \Carbon\Carbon::parse($projet->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($projet->end_date)->format('d/m/Y') }}
                                     </span>
-                                    <!-- Utilisateur -->
                                     <span class="text-sm text-[var(--primary-gray)]">Par <span class="font-medium text-[var(--primary-green-dark)]">{{ $projet->user->name }}</span></span>
                                 </div>
-
-                                <!-- Description -->
                                 <p class="text-[var(--primary-gray-dark)] mb-4 description">{{ $projet->description }}</p>
-
-                                <!-- Barre de progression -->
                                 @php
                                     $percentage = $projet->goal > 0 ? min(100, ($projet->contributions->sum('amount') / $projet->goal) * 100) : 0;
                                     $progressColor = $percentage < 25 ? 'var(--primary-green-superlight)' : 
@@ -101,14 +92,11 @@
                                 <div class="progress-bar mb-2">
                                     <div class="progress-value" style="width: {{ $percentage }}%; background-color: {{ $progressColor }};"></div>
                                 </div>
-
-                                <!-- Informations de financement -->
                                 <div class="flex justify-between text-sm mb-4">
                                     <span class="font-medium text-[var(--primary-green-dark)]">{{ number_format($projet->contributions->sum('amount'), 0, ',', ' ') }} €</span>
                                     <span class="text-[var(--primary-gray)]">Objectif: {{ number_format($projet->goal, 0, ',', ' ') }} €</span>
                                 </div>
 
-                                <!-- Statistiques du projet -->
                                 <div class="grid grid-cols-2 gap-2 mb-4">
                                     <div class="bg-gray-50 rounded-lg p-3 text-center">
                                         <span class="block text-sm text-[var(--primary-gray)]">Donateurs</span>
@@ -120,7 +108,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Bouton participer -->
                                 <a href="{{ route('projets.contribute', $projet->id) }}" class="block w-full bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)] text-white font-medium py-3 px-4 rounded-lg transition duration-300 text-center">
                                     Participer au projet
                                 </a>
@@ -130,7 +117,6 @@
                 </div>
             @endif
 
-            <!-- Bouton "Devenez pionnier" -->
             <div class="text-center mt-12">
                 <a href="{{ route('projets.create') }}" class="inline-flex items-center bg-[var(--primary-green)] text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-[var(--primary-green-dark)] transition-colors duration-300 shadow-md hover:shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -143,7 +129,6 @@
         </div>
     </div>
 
-    <!-- Script pour étendre la description -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.description').forEach(desc => {

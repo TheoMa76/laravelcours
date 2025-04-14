@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 
 use App\Models\Projet;
 use App\Models\Contribution;
+use App\Models\MaterialCategory;
 use App\Models\User;
 
 class ProjectController extends Controller
@@ -14,14 +15,14 @@ class ProjectController extends Controller
 
     public function index()
     {
-        //get projects with status 'En cours' and with user
         $projets = Projet::with('user')->where('status', 'en_cours')->get();
         return view('projects.projets', compact('projets'));
     }
 
     public function create(){
         $edit = false;
-        return view('projects.create', compact('edit'));
+        $material_categories = MaterialCategory::all();
+        return view('projects.create', compact('edit','material_categories'));
     }
 
     public function store(Request $request)
@@ -36,6 +37,8 @@ class ProjectController extends Controller
             'volunteer_hour_goal' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
         ]);
+
+        dd($validated['image']);
 
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('project_images', 'public');
@@ -69,7 +72,7 @@ class ProjectController extends Controller
     }
     public function show($id){
         $projet = Projet::findOrFail($id);
-        return view('projects.show', compact('projet'));
+        return view('projects.contribute', compact('projet'));
     }
 
     public function edit($id){
