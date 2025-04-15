@@ -57,7 +57,7 @@ class AdminHomeController extends Controller
             'usersCreatedThisPeriod', 'projectsCreatedThisPeriod', 'contributionsCreatedThisPeriod',
             'lastUserCreated', 'lastProjectCreated', 'lastContributionCreated',
             'labels', 'usersData', 'projectsData', 'contributionsData', 'isWeekly',
-            'financialContributionsTotal' // Ajout de la nouvelle variable
+            'financialContributionsTotal'
         ));
     }
 

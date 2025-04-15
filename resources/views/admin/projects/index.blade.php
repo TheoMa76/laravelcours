@@ -62,6 +62,11 @@
                             ]
                         ]
                     ]"
+
+                    :actionUrls="[
+                        'edit' => 'admin.projects.edit',
+                        'delete' => 'admin.projects.destroy',
+                    ]"
                 />
             </div>
         </div>

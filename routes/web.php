@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminProjectController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminHomeController;
 use App\Http\Controllers\Admin\AdminContributionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projets/{id}/edit', [ProjectController::class, 'edit'])->name('projets.edit');
     Route::put('/projets/{id}', [ProjectController::class, 'update'])->name('projets.update');
     Route::delete('/projets/{id}', [ProjectController::class, 'destroy'])->name('projets.destroy');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 });
 
 Route::middleware([EnsureUserIsAdmin::class])->group(function () {
@@ -45,10 +48,6 @@ Route::middleware([EnsureUserIsAdmin::class])->group(function () {
 
     Route::get('/admin/dashboard', [AdminHomeController::class, 'stats'])->name('admin.dashboard');
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

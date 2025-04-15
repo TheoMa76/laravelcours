@@ -89,6 +89,7 @@
                                 >
                                     Financier
                                 </button>
+                                @if(isset($materiels) && !$materiels->isEmpty())
                                 <button 
                                     @click="activeTab = 'material'" 
                                     :class="{ 'border-[var(--primary-green)] text-[var(--primary-green-dark)]': activeTab === 'material', 'border-transparent text-primary-gray-dark': activeTab !== 'material' }"
@@ -96,6 +97,8 @@
                                 >
                                     Matériel
                                 </button>
+                                @endif
+                                @if(isset($roles) && !$roles->isEmpty())
                                 <button 
                                     @click="activeTab = 'volunteer'" 
                                     :class="{ 'border-[var(--primary-green)] text-[var(--primary-green-dark)]': activeTab === 'volunteer', 'border-transparent text-primary-gray-dark': activeTab !== 'volunteer' }"
@@ -103,6 +106,7 @@
                                 >
                                     Bénévolat
                                 </button>
+                                @endif
                             </div>
                             
                             <div x-show="activeTab === 'financial'" class="mt-6">
@@ -152,6 +156,7 @@
                                 </form>
                             </div>
                             
+                            @if(isset($materiels) && !$materiels->isEmpty())
                             <div x-show="activeTab === 'material'" class="mt-6">
                                 <form action="{{ route('projets.contribute.submit', isset($projet->id) ? $projet->id : '') }}" method="POST">
                                     @csrf
@@ -162,25 +167,20 @@
                                             Matériel dont nous avons besoin
                                         </label>
                                         <div class="space-y-3 mb-4">
-                                            @foreach(isset($materiels) ? $materiels : [
-                                                ['id' => 1, 'name' => 'Outils de jardinage', 'description' => 'Pelles, râteaux, etc.'],
-                                                ['id' => 2, 'name' => 'Matériaux de construction', 'description' => 'Bois, vis, clous'],
-                                                ['id' => 3, 'name' => 'Plantes et arbustes', 'description' => 'Espèces locales adaptées'],
-                                                ['id' => 4, 'name' => 'Peinture écologique', 'description' => 'Pour les structures']
-                                            ] as $materiel)
+                                            @foreach($materiels as $materiel)
                                                 <div class="flex items-start space-x-3 p-3 rounded-lg border">
                                                     <input 
                                                         type="checkbox" 
-                                                        id="materiel-{{ $materiel['id'] }}" 
+                                                        id="materiel-{{ $materiel->id }}" 
                                                         name="materiels[]" 
-                                                        value="{{ $materiel['id'] }}"
+                                                        value="{{ $materiel->id }}"
                                                         class="rounded text-[var(--primary-green)] focus:ring-[var(--primary-green)] mt-1"
                                                     >
                                                     <div>
-                                                        <label for="materiel-{{ $materiel['id'] }}" class="font-medium text-primary-black">
-                                                            {{ $materiel['name'] }}
+                                                        <label for="materiel-{{ $materiel->id }}" class="font-medium text-primary-black">
+                                                            {{ $materiel->name }}
                                                         </label>
-                                                        <p class="text-sm text-primary-gray-dark">{{ $materiel['description'] }}</p>
+                                                        <p class="text-sm text-primary-gray-dark">{{ $materiel->description }}</p>
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -200,34 +200,6 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="mb-6">
-                                        <label class="block text-primary-gray-dark text-sm font-medium mb-2">
-                                            Vos coordonnées
-                                        </label>
-                                        <div class="grid grid-cols-1 gap-4">
-                                            <input 
-                                                type="text" 
-                                                name="name" 
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]" 
-                                                placeholder="Nom complet" 
-                                                required
-                                            >
-                                            <input 
-                                                type="email" 
-                                                name="email" 
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]" 
-                                                placeholder="Email" 
-                                                required
-                                            >
-                                            <input 
-                                                type="tel" 
-                                                name="phone" 
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]" 
-                                                placeholder="Téléphone" 
-                                                required
-                                            >
-                                        </div>
-                                    </div>
                                     
                                     <button type="submit" 
                                             class="w-full bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)] text-white font-medium py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center">
@@ -235,7 +207,9 @@
                                     </button>
                                 </form>
                             </div>
+                            @endif
                             
+                            @if(isset($roles) && !$roles->isEmpty())
                             <div x-show="activeTab === 'volunteer'" class="mt-6">
                                 <form action="{{ route('projets.contribute.submit', isset($projet->id) ? $projet->id : '') }}" method="POST">
                                     @csrf
@@ -252,13 +226,8 @@
                                             required
                                         >
                                             <option value="" disabled selected>Sélectionnez un rôle</option>
-                                            @foreach(isset($roles) ? $roles : [
-                                                ['id' => 1, 'name' => 'Jardinage', 'description' => 'Plantation et entretien des espaces verts'],
-                                                ['id' => 2, 'name' => 'Construction', 'description' => 'Aide à l\'assemblage des structures'],
-                                                ['id' => 3, 'name' => 'Coordination', 'description' => 'Organisation des équipes de bénévoles'],
-                                                ['id' => 4, 'name' => 'Communication', 'description' => 'Promotion du projet sur les réseaux sociaux']
-                                            ] as $role)
-                                                <option value="{{ $role['id'] }}">{{ $role['name'] }} - {{ $role['description'] }}</option>
+                                            @foreach($roles as $role)
+                                                <option value="{{ $role->id }}">{{ $role->name }} - {{ $role->description }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -318,41 +287,13 @@
                                         ></textarea>
                                     </div>
                                     
-                                    <div class="mb-6">
-                                        <label class="block text-primary-gray-dark text-sm font-medium mb-2">
-                                            Vos coordonnées
-                                        </label>
-                                        <div class="grid grid-cols-1 gap-4">
-                                            <input 
-                                                type="text" 
-                                                name="name" 
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]" 
-                                                placeholder="Nom complet" 
-                                                required
-                                            >
-                                            <input 
-                                                type="email" 
-                                                name="email" 
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]" 
-                                                placeholder="Email" 
-                                                required
-                                            >
-                                            <input 
-                                                type="tel" 
-                                                name="phone" 
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]" 
-                                                placeholder="Téléphone" 
-                                                required
-                                            >
-                                        </div>
-                                    </div>
-                                    
                                     <button type="submit" 
                                             class="w-full bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)] text-white font-medium py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center">
                                         <i class="fas fa-heart mr-2"></i> Proposer mon aide
                                     </button>
                                 </form>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>

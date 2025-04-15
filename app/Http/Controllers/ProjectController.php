@@ -9,6 +9,9 @@ use App\Models\Projet;
 use App\Models\Contribution;
 use App\Models\MaterialCategory;
 use App\Models\User;
+use App\Models\ContributionType;
+use App\Models\VolunteerRoleNeeded;
+use App\Models\ProjectMaterialNeeded;
 
 class ProjectController extends Controller
 {
@@ -34,33 +37,40 @@ class ProjectController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'money_goal' => 'required|numeric|min:0',
+            'materials' => 'nullable|array',
+            'materials.*.material_category_id' => 'required|exists:material_categories,id',
+            'materials.*.description' => 'nullable|string',
+            'roles' => 'nullable|array',
+            'roles.*.name' => 'required|string|max:255',
+            'roles.*.description' => 'nullable|string',
+            'roles.*.volunteer_hours_needed' => 'required|numeric|min:0',
             'volunteer_hour_goal' => 'nullable|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp',
         ]);
 
-        dd($validated['image']);
-
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('project_images', 'public');
-            $validated['image'] = $imagePath;
+            $image = $request->file('image');
+            $imageName = Str::random(10) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $imageName);
+            $validated['image'] = $imageName;
         }
         $validated['status'] = 'en_attente';
         $validated['user_id'] = auth()->id();
         $project = Projet::create($validated);
     
 
-        if ($request->needsMaterials && $request->materials) {
+        if (isset($request->materials)) {
             foreach ($request->materials as $material) {
-                $project->materials()->create([
+                $project->projectMaterialNeeded()->create([
                     'material_category_id' => $material['material_category_id'],
-                    'additional' => $material['additional'] ?? null,
+                    'description' => $material['description'],
                 ]);
             }
         }
 
-        if ($request->needsVolunteers && $request->roles) {
+        if (isset($request->roles)) {
             foreach ($request->roles as $role) {
-                $project->volunteerRoles()->create([
+                $project->volunteerRoleNeeded()->create([
                     'name' => $role['name'],
                     'description' => $role['description'],
                     'volunteer_hours_needed' => $role['volunteer_hours_needed'],
@@ -115,21 +125,46 @@ class ProjectController extends Controller
     }
 
     public function contribute(Request $request, $id){
+        dd($request->all());
         $request->validate([
             'amount' => 'required|numeric',
+            'donation_type' => 'required|string',
+            'message' => 'nullable|string|max:255',
+            'anonymous' => 'nullable|boolean',
+            'materiels' => 'nullable|array',
+            'custom_material' => 'nullable|string|max:255',
         ]);
 
         $contribution = new Contribution();
+        $contributionType = ContributionType::where('name', $request->donation_type)->first();
+        $contribution->contribution_type_id = $contributionType->id;
         $contribution->amount = $request->amount;
         $contribution->user_id = auth()->id();
         $contribution->projet_id = $id;
+        if($request->donation_type == 'financial'){
+            $contribution->aprouved_at = now();
+            $contribution->description = $request->message;
+        }else if($request->donation_type == 'material'){
+            $contribution->type = 'matériel';
+            $contribution->aprouved_at = null;
+            $contribution->description = $request->custom_material;
+        }else if($request->donation_type == 'volunteer'){
+            $contribution->type = 'bénévolat';
+            $contribution->aprouved_at = null;
+            $contribution->description = $request->skills;
+        }
+        if($request->anonymous){
+            $contribution->user_id = null;
+        }else{
+            $contribution->user_id = auth()->id();
+        }
         $contribution->save();
+        
 
         return redirect()->route('projets.show', $id)->with('success', 'Merci pour votre contribution !');
     }
 
     public function contributeForm($id){
-        $projet = Projet::findOrFail($id);
         $projet = Projet::findOrFail($id);
         $projet->contributions = Contribution::where('projet_id', $id)->get();
         $projet->totalAmount = $projet->contributions->where('type','financière')->sum('amount');
@@ -138,6 +173,8 @@ class ProjectController extends Controller
             $projet->contributionCount = 1;
             $projet->amount = 0;
         }
-        return view('projects.contribute', compact('projet'));
+        $materiels = ProjectMaterialNeeded::where('projet_id', $id)->with('materialCategory')->get();
+        $roles = VolunteerRoleNeeded::where('projet_id', $id)->get();
+        return view('projects.contribute', compact('projet','materiels', 'roles'));
     }
 }

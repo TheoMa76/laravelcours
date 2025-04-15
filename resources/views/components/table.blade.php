@@ -206,7 +206,6 @@ class="relative w-full">
                                                 <button 
                                                     type="submit"
                                                     class="flex items-center w-full px-3 py-1.5 text-xs text-[var(--primary-black)] hover:bg-[var(--primary-gray-light)] transition-colors duration-150"
-                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')"
                                                 >
                                                     <i class="fas fa-trash mr-2 text-[var(--primary-gray)] text-xs"></i>
                                                     <span class="truncate">Supprimer</span>

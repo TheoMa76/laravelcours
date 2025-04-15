@@ -128,9 +128,10 @@ class AdminProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Projet $projet)
+    public function destroy(int $id)
     {
-        $projet->delete();
+        Projet::find($id)->delete();
+        
         return redirect()->route('admin.projects.index')->with('success', 'Projet supprimé avec succès');
     }
 }

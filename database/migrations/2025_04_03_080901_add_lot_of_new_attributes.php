@@ -27,12 +27,12 @@ return new class extends Migration
             $table->foreignId('project_material_needed_id');
         });
 
-        Schema::create('project_material_needed', function (Blueprint $table) {
+        Schema::create('project_material_neededs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('material_category_id');
             $table->boolean('additional')->default(false);
-            $table->foreignId('project_id');
+            $table->foreignId('projet_id');
         });
 
         Schema::create('money_details', function (Blueprint $table) {
@@ -43,12 +43,12 @@ return new class extends Migration
             $table->foreignId('contribution_id');
         });
 
-        Schema::create('volunteer_role_needed', function (Blueprint $table) {
+        Schema::create('volunteer_role_neededs', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name');
             $table->string('description');
-            $table->foreignId('project_id');
+            $table->foreignId('projet_id');
             $table->string('volunteer_hours_needed');
         });
 
