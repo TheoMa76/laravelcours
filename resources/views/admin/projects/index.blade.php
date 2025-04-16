@@ -64,7 +64,7 @@
                     ]"
 
                     :actionUrls="[
-                        'edit' => 'admin.projects.edit',
+                        'edit' => 'projets.edit',
                         'delete' => 'admin.projects.destroy',
                     ]"
                 />

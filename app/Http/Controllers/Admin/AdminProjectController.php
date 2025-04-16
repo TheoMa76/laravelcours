@@ -130,6 +130,17 @@ class AdminProjectController extends Controller
      */
     public function destroy(int $id)
     {
+        //check if user is admin
+        if(!auth()->user()->isAdmin()){
+            return redirect()->route('admin.projects.index')->with('error', 'Vous n\'êtes pas autorisé à supprimer ce projet');
+        }
+        //check if projet has contributions
+        $projet = Projet::find($id);
+        if($projet->contributions->count() > 0 || $projet->volunteerRoleNeeded->count() > 0 ){
+            return redirect()->route('admin.projects.index')->with('error', 'Impossible de supprimer le projet car il a des contributions ou des bénévols associés');
+        }
+      
+
         Projet::find($id)->delete();
         
         return redirect()->route('admin.projects.index')->with('success', 'Projet supprimé avec succès');

@@ -147,16 +147,11 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-medium text-[var(--primary-black)]">{{ number_format($contribution->amount, 2, ',', ' ') }} € - {{ $contribution->project->name ?? 'Projet inconnu' }}</p>
+                                    <p class="text-xs font-medium text-[var(--primary-black)]">{{ number_format($contribution->amount, 2, ',', ' ') }} € - {{ $contribution->projet_name ?? 'Projet inconnu' }}</p>
                                     <p class="text-xs text-[var(--primary-gray)]">{{ $contribution->created_at->format('d/m/Y H:i') }}</p>
                                 </div>
                             </div>
                         @endforeach
-                    </div>
-                    <div class="mt-4 text-center">
-                        <a href="{{ route('contributions.index') }}" class="inline-flex items-center px-4 py-2 bg-[var(--primary-green-dark)] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[var(--primary-green)] active:bg-[var(--primary-green)] focus:outline-none focus:border-[var(--primary-green-dark)] focus:ring ring-[var(--primary-green-light)] disabled:opacity-25 transition ease-in-out duration-150">
-                            Voir toutes mes contributions
-                        </a>
                     </div>
                 @else
                     <p class="text-[var(--primary-gray)]">Vous n'avez pas encore fait de contributions.</p>

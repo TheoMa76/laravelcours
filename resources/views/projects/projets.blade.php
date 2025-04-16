@@ -16,32 +16,91 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        .project-card img {
+        
+        /* Conteneur d'image amélioré */
+        .image-container {
             height: 200px;
-            object-fit: cover;
-            border-top-left-radius: 0.75rem;
-            border-top-right-radius: 0.75rem;
+            width: auto;
+            overflow: hidden;
+            position: relative;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .project-card .description {
-            flex-grow: 1;
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .project-card:hover .image-container img {
+            transform: scale(1.03);
+        }
+        
+        /* Contenu de la carte */
+        .card-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Alignement du texte */
+        .description-container {
+            flex: 1;
+            min-height: 60px; /* Hauteur minimale pour aligner */
+        }
+        
+        .description {
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
+            cursor: pointer;
         }
-        .project-card .description.expanded {
+        
+        .description.expanded {
             -webkit-line-clamp: unset;
         }
+        
+        /* Barre de progression */
         .progress-bar {
             height: 8px;
             border-radius: 9999px;
-            background-color: #f3f4f6;
+            background-color: #d5d5d5;
             overflow: hidden;
+            margin: 0.5rem 0;
         }
+        
         .progress-value {
             height: 100%;
             border-radius: 9999px;
+        }
+        
+        /* Statistiques */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-item {
+            background-color: #f8f8f8;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+        }
+        
+        /* Bouton en bas de carte */
+        .card-button {
+            margin-top: auto;
         }
     </style>
 </head>
@@ -67,48 +126,57 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($projets as $projet)
                         <div class="project-card bg-white rounded-xl shadow-md overflow-hidden">
-                            <div class="relative">
-                                <img src="{{ asset('images/' . $projet->image) }}" alt="{{ $projet->name }}" class="w-full">
+                            <div class="image-container">
+                                <img src="{{ asset('images/' . $projet->image) }}" alt="{{ $projet->name }}" 
+                                     style="max-width: {{ $projet->image_width > $projet->image_height ? '100%' : 'auto' }}; 
+                                            max-height: {{ $projet->image_width > $projet->image_height ? 'auto' : '100%' }}">
                                 <div class="absolute top-3 right-3 bg-white bg-opacity-90 px-3 py-1 rounded-full text-xs font-medium text-[var(--primary-red)]">
                                     <span>Fin estimée {{ \Carbon\Carbon::parse($projet->end_date)->diffForHumans() }}</span>
                                 </div>
                             </div>
                             
-                            <div class="p-6">
+                            <div class="card-content">
                                 <h2 class="text-xl font-bold text-[var(--primary-black)] mb-2">{{ $projet->name }}</h2>
-                                <div class="flex justify-between items-center mb-4">
+                                
+                                <div class="flex justify-between items-center mb-3">
                                     <span class="text-sm text-[var(--primary-gray)]">
                                         {{ \Carbon\Carbon::parse($projet->start_date)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($projet->end_date)->format('d/m/Y') }}
                                     </span>
                                     <span class="text-sm text-[var(--primary-gray)]">Par <span class="font-medium text-[var(--primary-green-dark)]">{{ $projet->user->name }}</span></span>
                                 </div>
-                                <p class="text-[var(--primary-gray-dark)] mb-4 description">{{ $projet->description }}</p>
+                                
+                                <div class="description-container">
+                                    <p class="text-[var(--primary-gray-dark)] description">{{ $projet->description }}</p>
+                                </div>
+                                
                                 @php
-                                    $percentage = $projet->goal > 0 ? min(100, ($projet->contributions->sum('amount') / $projet->goal) * 100) : 0;
+                                    $percentage = $projet->money_goal > 0 ? min(100, ($projet->contributions->sum('amount') / $projet->money_goal) * 100) : 0;
                                     $progressColor = $percentage < 25 ? 'var(--primary-green-superlight)' : 
                                                     ($percentage < 50 ? 'var(--primary-green-light)' : 
                                                     ($percentage < 75 ? 'var(--primary-green)' : 'var(--primary-green-dark)'));
                                 @endphp
-                                <div class="progress-bar mb-2">
+                                
+                                <div class="progress-bar">
                                     <div class="progress-value" style="width: {{ $percentage }}%; background-color: {{ $progressColor }};"></div>
                                 </div>
-                                <div class="flex justify-between text-sm mb-4">
+                                
+                                <div class="flex justify-between text-sm mb-3">
                                     <span class="font-medium text-[var(--primary-green-dark)]">{{ number_format($projet->contributions->sum('amount'), 0, ',', ' ') }} €</span>
-                                    <span class="text-[var(--primary-gray)]">Objectif: {{ number_format($projet->goal, 0, ',', ' ') }} €</span>
+                                    <span class="text-[var(--primary-gray)]">Objectif: {{ number_format($projet->money_goal, 0, ',', ' ') }} €</span>
                                 </div>
 
-                                <div class="grid grid-cols-2 gap-2 mb-4">
-                                    <div class="bg-gray-50 rounded-lg p-3 text-center">
+                                <div class="stats-grid">
+                                    <div class="stat-item">
                                         <span class="block text-sm text-[var(--primary-gray)]">Donateurs</span>
                                         <span class="block text-lg font-bold text-[var(--primary-black)]">{{ $projet->contributions->count() }}</span>
                                     </div>
-                                    <div class="bg-gray-50 rounded-lg p-3 text-center">
+                                    <div class="stat-item">
                                         <span class="block text-sm text-[var(--primary-gray)]">Jours restants</span>
                                         <span class="block text-lg font-bold text-[var(--primary-black)]">{{ intval(\Carbon\Carbon::now()->diffInDays($projet->end_date)) }}</span>
                                     </div>
                                 </div>
 
-                                <a href="{{ route('projets.contribute', $projet->id) }}" class="block w-full bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)] text-white font-medium py-3 px-4 rounded-lg transition duration-300 text-center">
+                                <a href="{{ route('projets.contribute', $projet->id) }}" class="card-button block w-full bg-[var(--primary-green)] hover:bg-[var(--primary-green-dark)] text-white font-medium py-3 px-4 rounded-lg transition duration-300 text-center">
                                     Participer au projet
                                 </a>
                             </div>
@@ -134,6 +202,13 @@
             document.querySelectorAll('.description').forEach(desc => {
                 desc.addEventListener('click', () => {
                     desc.classList.toggle('expanded');
+                    // Ajuster la hauteur du conteneur parent si nécessaire
+                    const container = desc.closest('.description-container');
+                    if (desc.classList.contains('expanded')) {
+                        container.style.minHeight = 'auto';
+                    } else {
+                        container.style.minHeight = '60px';
+                    }
                 });
             });
         });

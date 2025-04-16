@@ -19,6 +19,17 @@ class ProjectController extends Controller
     public function index()
     {
         $projets = Projet::with('user')->where('status', 'en_cours')->get();
+        foreach($projets as $projet){
+            $imagePath = public_path('images/' . $projet->image);
+            if (file_exists($imagePath) && is_file($imagePath) && $imagePath != "images/") {
+                list($width, $height) = getimagesize($imagePath);
+                $projet->image_width = $width;
+                $projet->image_height = $height;
+            } else {
+                $projet->image_width = 1;
+                $projet->image_height = 1;
+            }
+        }
         return view('projects.projets', compact('projets'));
     }
 
@@ -63,7 +74,7 @@ class ProjectController extends Controller
             foreach ($request->materials as $material) {
                 $project->projectMaterialNeeded()->create([
                     'material_category_id' => $material['material_category_id'],
-                    'description' => $material['description'],
+                    'additional' => $material['additional'] ?? null,
                 ]);
             }
         }
@@ -87,8 +98,17 @@ class ProjectController extends Controller
 
     public function edit($id){
         $projet = Projet::findOrFail($id);
+        if($projet->user_id != auth()->id() && !auth()->user()->isAdmin()){
+            return redirect()->route('projets')->with('error', 'Vous n\'êtes pas autorisé à modifier ce projet');
+        }
+        $projet->contributions = Contribution::where('projet_id', $id)->get();
+        $projet->totalAmount = $projet->contributions->where('type','financière')->sum('amount');
+        $projet->contributionCount = $projet->contributions->count();
+        $projet->materials = ProjectMaterialNeeded::where('projet_id', $id)->with('materialCategory')->get();
+        $projet->roles = VolunteerRoleNeeded::where('projet_id', $id)->get();
+        $material_categories = MaterialCategory::all();
         $edit = true;
-        return view('projects.create', compact('projet', 'edit'));
+        return view('projects.create', compact('projet', 'edit', 'material_categories'));
     }
 
     public function update(Request $request, $id){
@@ -125,7 +145,6 @@ class ProjectController extends Controller
     }
 
     public function contribute(Request $request, $id){
-        dd($request->all());
         $request->validate([
             'amount' => 'required|numeric',
             'donation_type' => 'required|string',
@@ -142,15 +161,15 @@ class ProjectController extends Controller
         $contribution->user_id = auth()->id();
         $contribution->projet_id = $id;
         if($request->donation_type == 'financial'){
-            $contribution->aprouved_at = now();
+            $contribution->approved_at = now();
             $contribution->description = $request->message;
         }else if($request->donation_type == 'material'){
             $contribution->type = 'matériel';
-            $contribution->aprouved_at = null;
+            $contribution->approved_at = null;
             $contribution->description = $request->custom_material;
         }else if($request->donation_type == 'volunteer'){
             $contribution->type = 'bénévolat';
-            $contribution->aprouved_at = null;
+            $contribution->approved_at = null;
             $contribution->description = $request->skills;
         }
         if($request->anonymous){
@@ -159,7 +178,6 @@ class ProjectController extends Controller
             $contribution->user_id = auth()->id();
         }
         $contribution->save();
-        
 
         return redirect()->route('projets.show', $id)->with('success', 'Merci pour votre contribution !');
     }

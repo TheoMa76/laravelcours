@@ -18,6 +18,7 @@ class Projet extends Model
         'volunteer_hour_goal',
         'end_date',
         'user_id',
+        'image',
     ];
 
     protected $casts = [

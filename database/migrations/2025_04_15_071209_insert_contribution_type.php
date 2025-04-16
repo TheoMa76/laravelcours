@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::table('contribution_type')->insert([
+        DB::table('contribution_types')->insert([
             [
                 'name' => 'financial',
                 'description' => 'Pour les dons financiers destinés à soutenir les projets écologiques locaux.',

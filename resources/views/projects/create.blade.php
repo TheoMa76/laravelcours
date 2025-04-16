@@ -20,7 +20,7 @@
                 <div class="w-24"></div>
             </div>
 
-            <form action="{{ $edit ? route('projets.update',$projet->id) : route('projets.store') }}" method="POST" enctype="multipart/form-data" 
+            <form action="{{ $edit ? route('projets.update',$projet->id) : route('projets.store') }}" method={{$edit ? "PUT" : "POST"}} enctype="multipart/form-data" 
             x-data="projectForm" 
             @needs-materials-changed.window="needsMaterials = $event.detail; if($event.detail) materialsTabShown = false"
             @needs-volunteers-changed.window="needsVolunteers = $event.detail; if($event.detail) volunteersTabShown = false">
@@ -109,7 +109,7 @@
                                 
                                 <div>
                                     <label for="short_description" class="text-sm font-medium text-primary-gray-dark mb-2">Description courte <span class="text-[var(--primary-red)]">*</span></label>
-                                    <input type="text" id="short_description" name="short_description" value="{{ old('short_description'),$projet->short_description ?? '' }}" required
+                                    <input type="text" id="short_description" name="short_description" value="{{ old('short_description',$projet->short_description ?? '') }}" required
                                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
                                     @error('short_description')
                                         <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('short_description') }}</p>
@@ -129,7 +129,7 @@
                                 <div>
                                     <label for="description" class="text-sm font-medium text-primary-gray-dark mb-2">Description détaillée <span class="text-[var(--primary-red)]">*</span></label>
                                     <textarea id="description" name="description" rows="6" required
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">{{ old('description'), $projet->description ?? '' }}</textarea>
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">{{ old('description', $projet->description ?? '') }}</textarea>
                                     @error('description')
                                         <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('description') }}</p>
                                     @enderror
@@ -138,7 +138,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label for="start_date" class="text-sm font-medium text-primary-gray-dark mb-2">Date de début <span class="text-[var(--primary-red)]">*</span></label>
-                                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date'), isset($projet) ? \Carbon\Carbon::parse($projet->start_date)->format('Y-m-d') : '' }}" required
+                                        <input type="date" id="start_date" name="start_date" value="{{ old('start_date', isset($projet) ? \Carbon\Carbon::parse($projet->start_date)->format('Y-m-d') : '') }}" required
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
                                         @error('start_date')
                                             <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('start_date') }}</p>
@@ -147,7 +147,7 @@
                                     
                                     <div>
                                         <label for="end_date" class="text-sm font-medium text-primary-gray-dark mb-2">Date de fin <span class="text-[var(--primary-red)]">*</span></label>
-                                        <input type="date" id="end_date" name="end_date" value="{{ old('end_date'), isset($projet) ? \Carbon\Carbon::parse($projet->end_date)->format('Y-m-d') : '' }}" required
+                                        <input type="date" id="end_date" name="end_date" value="{{ old('end_date', isset($projet) ? \Carbon\Carbon::parse($projet->end_date)->format('Y-m-d') : '') }}" required
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
                                         @error('end_date')
                                             <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('end_date') }}</p>
@@ -178,7 +178,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label for="money_goal" class="text-sm font-medium text-primary-gray-dark mb-2">Objectif financier (€) <span class="text-[var(--primary-red)]">*</span></label>
-                                        <input type="number" id="money_goal" name="money_goal" value="{{ old('money_goal'), $projet->money_goal ?? '' }}" min="0" step="1" required
+                                        <input type="number" id="money_goal" name="money_goal" value="{{ old('money_goal', $projet->money_goal ?? '') }}" min="0" step="1" required
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
                                         @error('money_goal')
                                             <p class="mt-1 text-sm text-[var(--primary-red)]">{{ $errors->first('money_goal') }}</p>
@@ -222,7 +222,7 @@
                                     Objectif global d'heures de bénévolat <span class="text-[var(--primary-red)]">*</span>
                                 </label>
                                 <input type="number" id="volunteer_hour_goal" name="volunteer_hour_goal" 
-                                    value="{{ old('volunteer_hour_goal'), $projet->volunteer_hour_goal ?? '' }}" min="0" step="1"
+                                    value="{{ old('volunteer_hour_goal', $projet->volunteer_hour_goal ?? '') }}" min="0" step="1"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]"
                                     x-bind:required="needsVolunteers">
                                 @error('volunteer_hour_goal')
@@ -248,7 +248,11 @@
                             
                             <div class="space-y-4 mb-6">
                                 <div class="aspect-video bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                                    <img id="image-preview" src="{{ $projet->image ?? asset('images/greenPot.png') }}" alt="Aperçu du projet" class="w-auto h-full object-center">                                
+                                    <img 
+                                    id="image-preview"
+                                    src="{{ isset($projet) && $projet->image ? asset('images/' . $projet->image) : asset('images/greenPot.png') }}" 
+                                    alt="Aperçu du projet" 
+                                    class="w-auto h-full object-center">                                
                                 </div>
                                 
                                 <div>
@@ -316,6 +320,7 @@
     </div>
 
     <script>
+            const isEditMode = @json($edit ?? false);
         document.addEventListener('alpine:init', () => {
             window.Alpine.data('projectForm', () => ({
                 activeTab: 'general',
@@ -333,6 +338,9 @@
                     this.setupDynamicMaterials();
                     this.setupDynamicRoles();
                     this.setupProgressTracking();
+                    if(isEditMode) {
+                        this.prefillFromProjet();
+                    }
                 },
         
                 setupImagePreview() {
@@ -435,7 +443,7 @@
                                     
                                     <div>
                                         <label class=" text-sm font-medium text-primary-gray-dark mb-2">Informations supplémentaires</label>
-                                        <input type="text" name="materials[${this.materialCounter-1}][description]" 
+                                        <input type="text" name="materials[${this.materialCounter-1}][additional]" 
                                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]"
                                             placeholder="Précisions, quantité, etc.">
                                     </div>
@@ -687,6 +695,100 @@
                     this.$watch('needsVolunteers', () => updateProgress());
                 },
 
+                prefillFromProjet() {
+                    const materials = @json($projet->materials ?? []);
+                    const roles = @json($projet->roles ?? []);
+                    const materialCategories = @json($material_categories);
+
+                    // Si on a des matériaux, on active l'onglet et on les insère
+                    if (materials.length > 0) {
+                        this.needsMaterials = true;
+                        this.materialsTabShown = true;
+
+                        materials.forEach((material, index) => {
+                            this.materialCounter++;
+                            const newMaterial = document.createElement('div');
+                            newMaterial.className = 'material-item p-4 border rounded-lg';
+                            
+                            // Générer les options de catégorie
+                            let categoryOptions = '<option value="" disabled>Sélectionnez une catégorie</option>';
+                            materialCategories.forEach(category => {
+                                const selected = material.material_category_id == category.id ? 'selected' : '';
+                                categoryOptions += `<option value="${category.id}" ${selected}>${category.name}</option>`;
+                            });
+
+                            newMaterial.innerHTML = `
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-medium text-primary-black">Matériau #${this.materialCounter}</h4>
+                                    <button type="button" class="remove-material text-[var(--primary-red)] hover:text-[var(--primary-red-dark)]">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class=" text-sm font-medium text-primary-gray-dark mb-2">Catégorie <span class="text-[var(--primary-red)]">*</span></label>
+                                        <select name="materials[${index}][material_category_id]" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]">
+                                            ${categoryOptions}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label class=" text-sm font-medium text-primary-gray-dark mb-2">Informations supplémentaires</label>
+                                        <input type="text" name="materials[${index}][additional]"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]"
+                                            value="${material.additional || ''}" placeholder="Précisions, quantité, etc.">
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('materials-container').appendChild(newMaterial);
+                        });
+                    }
+
+                    if (roles.length > 0) {
+                        this.needsVolunteers = true;
+                        this.volunteersTabShown = true;
+
+                        roles.forEach((role, index) => {
+                            this.roleCounter++;
+                            const newRole = document.createElement('div');
+                            newRole.className = 'role-item p-4 border rounded-lg';
+                            newRole.innerHTML = `
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-medium text-primary-black">Rôle #${this.roleCounter}</h4>
+                                    <button type="button" class="remove-role text-[var(--primary-red)] hover:text-[var(--primary-red-dark)]">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class=" text-sm font-medium text-primary-gray-dark mb-2">Nom du rôle <span class="text-[var(--primary-red)]">*</span></label>
+                                        <input type="text" name="roles[${index}][name]" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]"
+                                            value="${role.name ?? ''}" placeholder="Ex: Jardinier, Coordinateur, etc.">
+                                    </div>
+
+                                    <div>
+                                        <label class=" text-sm font-medium text-primary-gray-dark mb-2">Description <span class="text-[var(--primary-red)]">*</span></label>
+                                        <textarea name="roles[${index}][description]" rows="3" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]"
+                                            placeholder="Décrivez les responsabilités et compétences requises...">${role.description ?? ''}</textarea>
+                                    </div>
+
+                                    <div>
+                                        <label class=" text-sm font-medium text-primary-gray-dark mb-2">Heures de bénévolat nécessaires <span class="text-[var(--primary-red)]">*</span></label>
+                                        <input type="number" name="roles[${index}][volunteer_hours_needed]" min="1" required
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[var(--primary-green)] focus:border-[var(--primary-green)]"
+                                            value="${role.volunteer_hours_needed ?? ''}" placeholder="Nombre d'heures">
+                                    </div>
+                                </div>
+                            `;
+                            document.getElementById('roles-container').appendChild(newRole);
+                        });
+                    }
+                },
         }));
     });
 </script>

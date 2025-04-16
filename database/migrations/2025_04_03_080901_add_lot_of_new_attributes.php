@@ -31,7 +31,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('material_category_id');
-            $table->boolean('additional')->default(false);
+            $table->string('additional')->nullable();
             $table->foreignId('projet_id');
         });
 
@@ -65,7 +65,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->foreignId('contribution_id');
         });
-        Schema::create('contribution_type', function (Blueprint $table) {
+        Schema::create('contribution_types', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name');
@@ -118,12 +118,12 @@ return new class extends Migration
             $table->dropColumn('phone');
         });
     
-        Schema::dropIfExists('contribution_type');
+        Schema::dropIfExists('contribution_types');
         Schema::dropIfExists('volunteer_details');
-        Schema::dropIfExists('volunteer_role_needed');
+        Schema::dropIfExists('volunteer_role_neededs');
         Schema::dropIfExists('money_details');
-        Schema::dropIfExists('project_material_needed');
+        Schema::dropIfExists('project_material_neededs');
         Schema::dropIfExists('material_details');
-        Schema::dropIfExists('material_category');
+        Schema::dropIfExists('material_categories');
     }
 };
