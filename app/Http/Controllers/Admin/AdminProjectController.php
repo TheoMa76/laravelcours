@@ -6,6 +6,8 @@ use App\Models\Projet;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\HandleSorting;
+use App\Models\MaterialCategory;
+
 
 class AdminProjectController extends Controller
 {
@@ -58,7 +60,9 @@ class AdminProjectController extends Controller
      */
     public function create()
     {
-        return view('admin.projects.create');
+        $edit = false;
+        $material_categories = MaterialCategory::all();
+        return view('projects.create', compact('edit','material_categories'));
     }
 
     /**

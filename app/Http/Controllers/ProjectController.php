@@ -13,6 +13,7 @@ use App\Models\ContributionType;
 use App\Models\VolunteerRoleNeeded;
 use App\Models\ProjectMaterialNeeded;
 
+
 class ProjectController extends Controller
 {
 
@@ -65,7 +66,11 @@ class ProjectController extends Controller
             $image->move(public_path('images'), $imageName);
             $validated['image'] = $imageName;
         }
-        $validated['status'] = 'en_attente';
+        if(auth()->user()->isAdmin()){
+            $validated['status'] = 'en_cours';
+        }else{
+            $validated['status'] = 'en_attente';
+        }
         $validated['user_id'] = auth()->id();
         $project = Projet::create($validated);
     

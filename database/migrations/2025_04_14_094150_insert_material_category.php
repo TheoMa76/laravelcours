@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        DB::table('material_category')->insert([
+        DB::table('material_categories')->insert([
             [
                 'name' => 'Outils',
                 'description' => 'Catégorie dédiée aux personnes souhaitant faire don d’outils utiles aux projets écologiques, qu’il s’agisse d’outillage de jardin, de bricolage ou de construction.',
@@ -39,7 +39,7 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        DB::table('material_category')->whereIn('name', [
+        DB::table('material_categories')->whereIn('name', [
             'Outils',
             'Matériaux de construction',
             'Plantes et végétaux',

@@ -4,10 +4,6 @@
     <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-medium text-[var(--primary-black)]">Liste des Utilisateurs</h3>
-            <a href="{{ route('admin.projects.create') }}" 
-                class="bg-[var(--primary-green)] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[var(--primary-green-dark)] transition-colors duration-300">
-                Créer un Utilisateur
-            </a>
     </div>
             
         <x-table 
