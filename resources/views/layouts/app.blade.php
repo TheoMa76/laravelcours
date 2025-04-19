@@ -8,7 +8,7 @@
         <title>{{ config('app.name', 'GreenPot') }}</title>
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin-dashboard.js',user-dashboard.js'])
     </head>
     <body class="font-sans antialiased">
         @if (Auth::user()->is_admin)
